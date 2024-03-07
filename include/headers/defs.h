@@ -19,8 +19,8 @@ const int BG_COLOR[3] {92,148,252};
 #define MAP_RENDER_HEIGHT   16
 
 #define SPEED 5;
-#define GRAVITY 0.98
-#define MAX_FALL_SPEED 10
+#define GRAVITY 9.8
+#define MAX_FALL_SPEED 50
 
 enum Tile {Empty, Ground, Wall, Question, Block, Cloud, Grass, B_Mountain, S_Mountain, Castle};
 

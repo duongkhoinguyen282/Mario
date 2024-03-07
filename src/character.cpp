@@ -70,7 +70,7 @@ void Character::handle_input(SDL_Renderer* &renderer, SDL_Event event){
         }
     }
 }
-void Character::update(Stage &stage){
+void Character::update(Map &map){
     velocity.x = 0;
     velocity.y += GRAVITY;
 
@@ -84,8 +84,12 @@ void Character::update(Stage &stage){
     else if(input.left){
         velocity.x -= SPEED;
     }
+
+    check_collision(map);
+    position.x += velocity.x;
+    position.y += velocity.y;
 }
-void Character::check_collision(Stage &stage){
+void Character::check_collision(Map &map){
     int x1(0), x2(0);
     int y1(0), y2(0);
 
@@ -103,14 +107,17 @@ void Character::check_collision(Stage &stage){
     if(x1 >= 0 && x2 < MAP_WIDTH && y1 >= 0 &&  y2 < MAP_HEIGHT){
         //check right collision
         if(velocity.x > 0){
-            if(stage.map_data[y1][x2] != Tile::Empty || stage.map_data[y2][x2] != Tile::Empty){
-                position.x = x2*TILE_SIZE - frame_size.x + 1;
-                velocity.x = 0;
+            if(map.get_stage().map_data[y1][x2] != Tile::Empty || map.get_stage().map_data[y2][x2] != Tile::Empty){
+                // position.x = x2*TILE_SIZE;
+                // position.x -= frame_size.x + 1;
+                // velocity.x = 0;
+                std::cout<<map.get_stage().map_data[y1][x2]<<" "<<map.get_stage().map_data[y2][x2]<<std::endl;
+                std::cout<<"hit"<<std::endl;
             }
         }
         //check left collision
         else if(velocity.x < 0){
-            if(stage.map_data[y2][x1] != Tile::Empty || stage.map_data[y1][x1] != Tile::Empty){
+            if(map.get_stage().map_data[y1][x1] != Tile::Empty || map.get_stage().map_data[y2][x1] != Tile::Empty){
                 position.x = (x1+1)*TILE_SIZE;
                 velocity.x = 0;
             }
@@ -118,29 +125,33 @@ void Character::check_collision(Stage &stage){
     }
 
     //check vertical
-    min.x = std::min(frame_size.y, TILE_SIZE);
+    min.x = std::min(frame_size.x, TILE_SIZE);
 
-    x1 = (position.x + velocity.x)/TILE_SIZE;
-    x2 = (position.x + velocity.x + frame_size.x - 1)/TILE_SIZE;
+    x1 = (position.x)/TILE_SIZE;
+    x2 = (position.x + min.x - 1)/TILE_SIZE;
     
-    y1 = (position.y)/TILE_SIZE;
-    y2 = (position.y + min.x - 1)/TILE_SIZE;
+    y1 = (position.y + velocity.y)/TILE_SIZE;
+    y2 = (position.y + frame_size.y - 1)/TILE_SIZE;
 
     if(x1 >= 0 && x2 < MAP_WIDTH && y1 >= 0 &&  y2 < MAP_HEIGHT){
-        //check top collision
-        if(velocity.x > 0){
-            if(stage.map_data[y1][x2] != Tile::Empty || stage.map_data[y2][x2] != Tile::Empty){
-                position.x = x2*TILE_SIZE - frame_size.x + 1;
-                velocity.x = 0;
-            }
-        }
         //check bottom collision
-        else if(velocity.x < 0){
-            if(stage.map_data[y2][x1] != Tile::Empty || stage.map_data[y1][x1] != Tile::Empty){
-                position.x = (x1+1)*TILE_SIZE;
-                velocity.x = 0;
+        if(velocity.y > 0){
+            if(map.get_stage().map_data[y2][x1] != Tile::Empty || map.get_stage().map_data[y2][x2] != Tile::Empty){
+                position.y = y2*TILE_SIZE - frame_size.y + 1;
+                velocity.y = 0;
+                can_jump = true;
             }
         }
-    }    
+        //check top collision
+        else if(velocity.y < 0){
+            if(map.get_stage().map_data[y1][x1] != Tile::Empty || map.get_stage().map_data[y1][x2] != Tile::Empty){
+                position.y = (y1+1)*TILE_SIZE;
+                velocity.y = 0;
+            }
+        }
+    }
+
+    if(position.x < 0) position.x = 0;
+    if(position.x + frame_size.x > map.get_stage().max.x) position.x = map.get_stage().max.x - frame_size.x;    
 }
 

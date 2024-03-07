@@ -15,8 +15,8 @@ int main(int argc, char *argv[]){
 	// float delta_time = 0;
 
 	//init map
-	Map stage0; stage0.load_map("res/map/map.dat"); stage0.load_tiles(renderer);
-	// std::cout<<stage0.get_stage().map_data[0][0]<<std::endl;
+	Map map0; map0.load_map("res/map/map.dat"); map0.load_tiles(renderer);
+	// std::cout<<map0.get_stage().map_data[0][0]<<std::endl;
 	// std::cout<<"abc";
 
 	//init player
@@ -40,7 +40,8 @@ int main(int argc, char *argv[]){
 
 		// clear and render
 		SDL_RenderClear(renderer);
-		stage0.draw_map(renderer);
+		map0.draw_map(renderer);
+		mario.update(map0);
 		mario.draw(renderer);
 		SDL_RenderPresent(renderer);
 		SDL_Delay(1000 / 25);

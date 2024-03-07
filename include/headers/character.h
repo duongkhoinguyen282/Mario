@@ -2,6 +2,7 @@
 #define CHARACTER_H
 
 #include<entity.h>
+#include<map.h>
 
 class Character: public Entity
 {
@@ -13,8 +14,8 @@ public:
     void set_frame();
     void draw(SDL_Renderer* &renderer);
     void handle_input(SDL_Renderer* &renderer, SDL_Event event);
-    void update(Stage &stage);
-    void check_collision(Stage &stage);
+    void update(Map &map);
+    void check_collision(Map &map);
 
 private:
     Entity body;
@@ -25,7 +26,7 @@ private:
     int frame;
     bool face_right;
     Input input;
-
+    bool can_jump = false;
 };
 
 #endif
