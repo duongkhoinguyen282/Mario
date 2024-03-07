@@ -55,23 +55,22 @@ void Map::load_tiles(SDL_Renderer* &renderer){
 
 }
 void Map::draw_map(SDL_Renderer* &renderer){
-    Vector2i left = {0,0}, right = {0,0};
     int x1(0), x2(0);
     int y1(0), y2(0);
 
     int map_x(0), map_y(0);
 
     map_x = stage.start.x/TILE_SIZE;
-    left.x = (stage.start.x %TILE_SIZE)*(-1);
-    right.x = left.x + WINDOW_WIDTH + (left.x == 0 ? 0 : TILE_SIZE);
+    x1 = (stage.start.x %TILE_SIZE)*(-1);
+    x2 = x1 + WINDOW_WIDTH + (x1 == 0 ? 0 : TILE_SIZE);
 
     map_y = stage.start.y/TILE_SIZE;
-    left.y = (stage.start.y %TILE_SIZE)*(-1);
-    right.y = left.y + WINDOW_WIDTH + (left.y == 0 ? 0 : TILE_SIZE);
+    y1 = (stage.start.y %TILE_SIZE)*(-1);
+    y2 = y1 + WINDOW_WIDTH + (y1 == 0 ? 0 : TILE_SIZE);
     
-    for(int i = left.y; i < right.y; i+=TILE_SIZE){
+    for(int i = y1; i < y2; i+=TILE_SIZE){
         map_x = stage.start.x/TILE_SIZE;
-        for(int j = left.x; j < right.x; j+=TILE_SIZE){
+        for(int j = x1; j < x2; j+=TILE_SIZE){
             int val = stage.map_data[map_y][map_x];
             if(val > 0){
                 tiles[val].set_position({j,i});

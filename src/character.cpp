@@ -2,7 +2,7 @@
 
 Character::Character(){
     frame = 0;
-    position = {0,0};
+    position = {50,0};
     velocity = {0,0};
     frame_size = {0,0};
     face_right = true;
@@ -86,25 +86,61 @@ void Character::update(Stage &stage){
     }
 }
 void Character::check_collision(Stage &stage){
-    Vector2i left = {0,0}, right = {0,0};
+    int x1(0), x2(0);
+    int y1(0), y2(0);
+
+    Vector2i min(0,0);
 
     //check horizontal
-    int height_min = std::min(frame_size.y, TILE_SIZE);
+    min.y = std::min(frame_size.y, TILE_SIZE);
 
-    left.x = (position.x + velocity.x)/TILE_SIZE;
-    right.x = (position.x + velocity.x + frame_size.x - 1)/TILE_SIZE;
+    x1 = (position.x + velocity.x)/TILE_SIZE;
+    x2 = (position.x + velocity.x + frame_size.x - 1)/TILE_SIZE;
     
-    left.y = (position.y)/TILE_SIZE;
-    right.y = (position.y + height_min - 1)/TILE_SIZE;
+    y1 = (position.y)/TILE_SIZE;
+    y2 = (position.y + min.y - 1)/TILE_SIZE;
 
-    if(left.x >= 0 && right.x < MAP_WIDTH && left.y >= 0 &&  right.y < MAP_HEIGHT){
+    if(x1 >= 0 && x2 < MAP_WIDTH && y1 >= 0 &&  y2 < MAP_HEIGHT){
         //check right collision
         if(velocity.x > 0){
-            if(stage.map_data[left.y][right.x] != Tile::Empty || stage.map_data[right.y][right.x] != Tile::Empty){
-                velocity.x = right.x*TILE_SIZE - frame_size.x + 1;
+            if(stage.map_data[y1][x2] != Tile::Empty || stage.map_data[y2][x2] != Tile::Empty){
+                position.x = x2*TILE_SIZE - frame_size.x + 1;
                 velocity.x = 0;
             }
         }
-    }  
+        //check left collision
+        else if(velocity.x < 0){
+            if(stage.map_data[y2][x1] != Tile::Empty || stage.map_data[y1][x1] != Tile::Empty){
+                position.x = (x1+1)*TILE_SIZE;
+                velocity.x = 0;
+            }
+        }
+    }
+
+    //check vertical
+    min.x = std::min(frame_size.y, TILE_SIZE);
+
+    x1 = (position.x + velocity.x)/TILE_SIZE;
+    x2 = (position.x + velocity.x + frame_size.x - 1)/TILE_SIZE;
+    
+    y1 = (position.y)/TILE_SIZE;
+    y2 = (position.y + min.x - 1)/TILE_SIZE;
+
+    if(x1 >= 0 && x2 < MAP_WIDTH && y1 >= 0 &&  y2 < MAP_HEIGHT){
+        //check top collision
+        if(velocity.x > 0){
+            if(stage.map_data[y1][x2] != Tile::Empty || stage.map_data[y2][x2] != Tile::Empty){
+                position.x = x2*TILE_SIZE - frame_size.x + 1;
+                velocity.x = 0;
+            }
+        }
+        //check bottom collision
+        else if(velocity.x < 0){
+            if(stage.map_data[y2][x1] != Tile::Empty || stage.map_data[y1][x1] != Tile::Empty){
+                position.x = (x1+1)*TILE_SIZE;
+                velocity.x = 0;
+            }
+        }
+    }    
 }
 
