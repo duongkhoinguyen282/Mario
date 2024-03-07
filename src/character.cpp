@@ -41,7 +41,7 @@ void Character::draw(SDL_Renderer* &renderer){
     else{
         frame = 0;
     }
-    if(frame >= 4) frame = 0;
+    if(frame >= 4) frame = 1;
 
     // body.set_position(position);
 
@@ -86,22 +86,24 @@ void Character::update(Stage &stage){
     }
 }
 void Character::check_collision(Stage &stage){
-    int x1(0), x2(0);
-    int y1(0), y2(0);
+    Vector2i left = {0,0}, right = {0,0};
 
     //check horizontal
     int height_min = std::min(frame_size.y, TILE_SIZE);
 
-    x1 = (position.x + velocity.x)/TILE_SIZE;
-    x2 = (position.x + velocity.x + frame_size.x - 1)/TILE_SIZE;
+    left.x = (position.x + velocity.x)/TILE_SIZE;
+    right.x = (position.x + velocity.x + frame_size.x - 1)/TILE_SIZE;
     
-    y1 = (position.y)/TILE_SIZE;
-    y2 = (position.y + height_min - 1)/TILE_SIZE;
+    left.y = (position.y)/TILE_SIZE;
+    right.y = (position.y + height_min - 1)/TILE_SIZE;
 
-    if(x1 >= 0 && x2 < MAP_WIDTH && y1 >= 0 &&  y2 < MAP_HEIGHT){
+    if(left.x >= 0 && right.x < MAP_WIDTH && left.y >= 0 &&  right.y < MAP_HEIGHT){
         //check right collision
         if(velocity.x > 0){
-
+            if(stage.map_data[left.y][right.x] != Tile::Empty || stage.map_data[right.y][right.x] != Tile::Empty){
+                velocity.x = right.x*TILE_SIZE - frame_size.x + 1;
+                velocity.x = 0;
+            }
         }
     }  
 }
