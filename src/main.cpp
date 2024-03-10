@@ -9,15 +9,8 @@ int main(int argc, char *argv[]){
 	SDL_Window* window; SDL_Renderer* renderer;
     init_SDL(window, renderer);
 
-	// SDL_Texture* mario = IMG_LoadTexture(renderer, "res/image/mario_right.png");
-	// Animation ani(mario, {3,1}, 0.3f);
-
-	// float delta_time = 0;
-
 	//init map
 	Map map0; map0.load_map("res/map/map.dat"); map0.load_tiles(renderer);
-	// std::cout<<map0.get_stage().map_data[0][0]<<std::endl;
-	// std::cout<<"abc";
 
 	//init player
 	Character mario;
@@ -35,6 +28,9 @@ int main(int argc, char *argv[]){
                 is_open=false;
                 break;
             }
+			else if(event.key.keysym.sym == SDLK_ESCAPE && event.type == SDL_KEYDOWN){ 
+                system("PAUSE");
+            }
 			mario.handle_input(renderer, event);
 		}
 
@@ -44,7 +40,7 @@ int main(int argc, char *argv[]){
 		mario.update(map0);
 		mario.draw(renderer);
 		SDL_RenderPresent(renderer);
-		SDL_Delay(1000 / 25);
+		SDL_Delay(1000 / 30);
 	}
 
 	//destroy and quit

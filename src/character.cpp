@@ -2,9 +2,9 @@
 
 Character::Character(){
     frame = 0;
-    position = {50,0};
+    position = {405,0};
     velocity = {0,0};
-    frame_size = {0,0};
+    size = {0,0};
     face_right = true;
     input.right = false;
     input.left = false;
@@ -15,16 +15,16 @@ Character::Character(){
 Character::~Character(){}
 
 SDL_Texture* Character::load_texture(SDL_Renderer* &renderer, std::string filename){
-    frame_size = {45,45}; 
+    size = {45,45}; 
     return Entity::load_texture(renderer,filename); 
 }
 void Character::set_frame(){
-    if(frame_size.x > 0 && frame_size.y > 0){
+    if(size.x > 0 && size.y > 0){
         for(int i = 0; i < 4; i++){
-            frames[i].x = i*frame_size.x;
+            frames[i].x = i*size.x;
             frames[i].y = 0;
-            frames[i].w = frame_size.x;
-            frames[i].h = frame_size.y;
+            frames[i].w = size.x;
+            frames[i].h = size.y;
         }
     }
 }
@@ -43,10 +43,8 @@ void Character::draw(SDL_Renderer* &renderer){
     }
     if(frame >= 4) frame = 1;
 
-    // body.set_position(position);
-
     SDL_Rect* curr_frame = &frames[frame];
-    SDL_Rect dest = {position.x, position.y, frame_size.x, frame_size.y}; 
+    SDL_Rect dest = {position.x, position.y, size.x, size.y}; 
 
     SDL_RenderCopy(renderer, texture, curr_frame, &dest);
 }
@@ -60,6 +58,9 @@ void Character::handle_input(SDL_Renderer* &renderer, SDL_Event event){
             face_right = false;
             input.left = true;
         }
+        if(event.key.keysym.sym == SDLK_UP){
+            input.jump = true;
+        }
     }
     else if(event.type == SDL_KEYUP){
         if(event.key.keysym.sym == SDLK_RIGHT){
@@ -68,90 +69,101 @@ void Character::handle_input(SDL_Renderer* &renderer, SDL_Event event){
         if(event.key.keysym.sym == SDLK_LEFT){
             input.left = false;
         }
+        if(event.key.keysym.sym == SDLK_UP){
+            input.jump = false;
+        }
     }
 }
 void Character::update(Map &map){
     velocity.x = 0;
     velocity.y += GRAVITY;
 
-    if(velocity.y >= MAX_FALL_SPEED){
-        velocity.y = MAX_FALL_SPEED;
-    }
-
+    if(velocity.y >= MAX_FALL_SPEED) velocity.y = MAX_FALL_SPEED;
+    
     if(input.right){
         velocity.x += SPEED;
     }
-    else if(input.left){
+    if(input.left){
         velocity.x -= SPEED;
+    }
+    if(input.jump && can_jump){
+        can_jump = false;
+        velocity.y = -sqrtf(2.0f*GRAVITY*(TILE_SIZE));
     }
 
     check_collision(map);
-    position.x += velocity.x;
-    position.y += velocity.y;
+
 }
 void Character::check_collision(Map &map){
+    //setup corners' coordinates    
     int x1(0), x2(0);
     int y1(0), y2(0);
 
-    Vector2i min(0,0);
+    x1 = (position.x + velocity.x)/TILE_SIZE;
+    x2 = (position.x + velocity.x + size.x-1)/TILE_SIZE;
+
+    y1 = (position.y)/TILE_SIZE;
+    y2 = (position.y + size.y - 1)/TILE_SIZE;
 
     //check horizontal
-    min.y = std::min(frame_size.y, TILE_SIZE);
-
-    x1 = (position.x + velocity.x)/TILE_SIZE;
-    x2 = (position.x + velocity.x + frame_size.x - 1)/TILE_SIZE;
-    
-    y1 = (position.y)/TILE_SIZE;
-    y2 = (position.y + min.y - 1)/TILE_SIZE;
-
-    if(x1 >= 0 && x2 < MAP_WIDTH && y1 >= 0 &&  y2 < MAP_HEIGHT){
-        //check right collision
-        if(velocity.x > 0){
-            if(map.get_stage().map_data[y1][x2] != Tile::Empty || map.get_stage().map_data[y2][x2] != Tile::Empty){
-                // position.x = x2*TILE_SIZE;
-                // position.x -= frame_size.x + 1;
-                // velocity.x = 0;
-                std::cout<<map.get_stage().map_data[y1][x2]<<" "<<map.get_stage().map_data[y2][x2]<<std::endl;
-                std::cout<<"hit"<<std::endl;
-            }
-        }
-        //check left collision
-        else if(velocity.x < 0){
-            if(map.get_stage().map_data[y1][x1] != Tile::Empty || map.get_stage().map_data[y2][x1] != Tile::Empty){
-                position.x = (x1+1)*TILE_SIZE;
-                velocity.x = 0;
-            }
+    //check right collision
+    if(velocity.x > 0){
+        if(map.get_stage().map_data[y1][x2] != Tile::Empty || map.get_stage().map_data[y2][x2] != Tile::Empty){
+            position.x = x1*TILE_SIZE;
+            velocity.x = 0;
         }
     }
-
-    //check vertical
-    min.x = std::min(frame_size.x, TILE_SIZE);
+    //check left collision
+    else if(velocity.x < 0){
+        if(map.get_stage().map_data[y1][x1] != Tile::Empty || map.get_stage().map_data[y2][x1] != Tile::Empty){
+            position.x = (x1+1)*TILE_SIZE;
+            velocity.x = 0;
+        }
+    }
 
     x1 = (position.x)/TILE_SIZE;
-    x2 = (position.x + min.x - 1)/TILE_SIZE;
-    
-    y1 = (position.y + velocity.y)/TILE_SIZE;
-    y2 = (position.y + frame_size.y - 1)/TILE_SIZE;
+    x2 = (position.x + size.x - 1)/TILE_SIZE;
 
-    if(x1 >= 0 && x2 < MAP_WIDTH && y1 >= 0 &&  y2 < MAP_HEIGHT){
-        //check bottom collision
-        if(velocity.y > 0){
-            if(map.get_stage().map_data[y2][x1] != Tile::Empty || map.get_stage().map_data[y2][x2] != Tile::Empty){
-                position.y = y2*TILE_SIZE - frame_size.y + 1;
-                velocity.y = 0;
-                can_jump = true;
-            }
-        }
-        //check top collision
-        else if(velocity.y < 0){
-            if(map.get_stage().map_data[y1][x1] != Tile::Empty || map.get_stage().map_data[y1][x2] != Tile::Empty){
-                position.y = (y1+1)*TILE_SIZE;
-                velocity.y = 0;
-            }
+    y1 = (position.y + velocity.y)/TILE_SIZE;
+    y2 = (position.y + size.y + velocity.y-1)/TILE_SIZE;
+
+    //check vertical
+    //check bottom collision
+    if(velocity.y > 0){
+        if(map.get_stage().map_data[y2][x1] != Tile::Empty ||
+        map.get_stage().map_data[y2][x2] != Tile::Empty){
+            position.y = y1*TILE_SIZE;
+            velocity.y = 0;
+            can_jump = true;
         }
     }
+    //check top collision
+    else if(velocity.y < 0){
+        if(map.get_stage().map_data[y1][x1] != Tile::Empty ||
+        map.get_stage().map_data[y1][x2] != Tile::Empty){
+            position.y = (y1+1)*TILE_SIZE;
+            velocity.y = 0;
+        }
+    }
+    
+    position.x += velocity.x;
+    position.y += velocity.y;
 
-    if(position.x < 0) position.x = 0;
-    if(position.x + frame_size.x > map.get_stage().max.x) position.x = map.get_stage().max.x - frame_size.x;    
+    //check window borders
+    if(position.x + velocity.x <= 0){
+        velocity.x = 0;
+        position.x = 0;
+    }
+    if(position.x + size.x + velocity.x >= WINDOW_WIDTH){
+        velocity.x = 0;
+        position.x = WINDOW_WIDTH - size.x; 
+    }
 }
+bool Character::is_hit(int map_data){
+    if(map_data != Tile::Empty || map_data != Tile::Cloud || map_data != Tile::B_Mountain || map_data != Tile::S_Mountain){
+        return true;
+    }
+    return false;
+}
+
 

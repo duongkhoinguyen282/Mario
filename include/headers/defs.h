@@ -5,7 +5,7 @@
 
 #define WINDOW_WIDTH 720
 #define WINDOW_HEIGHT 720
-#define WINDOW_TITLE "SDL first game"
+#define WINDOW_TITLE "Non-super Mario Bros"
 const int BG_COLOR[3] {92,148,252};
 
 #define MAX_TILES    20
@@ -18,7 +18,7 @@ const int BG_COLOR[3] {92,148,252};
 #define MAP_RENDER_WIDTH    16
 #define MAP_RENDER_HEIGHT   16
 
-#define SPEED 5;
+#define SPEED 15;
 #define GRAVITY 9.8
 #define MAX_FALL_SPEED 50
 

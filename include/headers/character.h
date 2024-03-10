@@ -16,12 +16,10 @@ public:
     void handle_input(SDL_Renderer* &renderer, SDL_Event event);
     void update(Map &map);
     void check_collision(Map &map);
+    bool is_hit(int map_data);
 
 private:
-    Entity body;
     Vector2f velocity;
-    // Vector2i position;
-    Vector2i frame_size;
     SDL_Rect frames[4];
     int frame;
     bool face_right;
