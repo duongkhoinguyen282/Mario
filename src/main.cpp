@@ -13,9 +13,7 @@ int main(int argc, char *argv[]){
 	Map map0; map0.load_map("res/map/map.dat"); map0.load_tiles(renderer);
 
 	//init player
-	Character mario;
-	mario.load_texture(renderer, "res/image/mario_right.png");
-	mario.set_frame();
+	Character mario;	mario.set_frame();
 
 	// animation loop
 	while (is_open) {

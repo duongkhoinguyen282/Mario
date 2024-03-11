@@ -4,23 +4,20 @@ Character::Character(){
     frame = 0;
     position = {0,0};
     velocity = {0,0};
-    size = {0,0};
+    size = {45,45};
     face_right = true;
     input.right = false;
     input.left = false;
     input.jump = false;
-
+    map_x = 0;
+    map_y = 0;
 }
 
 Character::~Character(){}
 
-SDL_Texture* Character::load_texture(SDL_Renderer* &renderer, std::string filename){
-    size = {45,45}; 
-    return Entity::load_texture(renderer,filename); 
-}
 void Character::set_frame(){
     if(size.x > 0 && size.y > 0){
-        for(int i = 0; i < 4; i++){
+        for(int i = 0; i < CHAR_FRAMES; i++){
             frames[i].x = i*size.x;
             frames[i].y = 0;
             frames[i].w = size.x;
@@ -29,19 +26,32 @@ void Character::set_frame(){
     }
 }
 void Character::draw(SDL_Renderer* &renderer){
+    //load mario texture
     if(face_right){
         texture = load_texture(renderer,"res/image/mario_right.png");
     }
     else{
         texture = load_texture(renderer,"res/image/mario_left.png");
     }
-    if(input.left == true || input.right == true){
-        frame++;
+    //mario jump
+    if(input.jump){
+        frame = 4;
     }
+    //mario walk
+    else if((input.left && !input.right) || (input.right && !input.left)){
+        face_right = input.right & ~input.left;
+        // frame++;
+        // if(frame >= 4) frame = 1;
+        frame = 0;
+    }
+    //mario brake
+    else if(input.left && input.right){
+        frame = 5;
+    }
+    //idle mario
     else{
         frame = 0;
     }
-    if(frame >= 4) frame = 1;
 
     SDL_Rect* curr_frame = &frames[frame];
     SDL_Rect dest = {position.x, position.y, size.x, size.y}; 
@@ -81,17 +91,24 @@ void Character::update(Map &map){
     if(velocity.y >= MAX_FALL_SPEED) velocity.y = MAX_FALL_SPEED;
     
     if(input.right){
-        velocity.x += SPEED;
+        velocity.x = std::min((velocity.x + ACCELERATION), SPEED);
     }
-    if(input.left){
-        velocity.x -= SPEED;
+    else if(input.left){
+        velocity.x = std::max((velocity.x - ACCELERATION), -SPEED);
     }
-    if(input.jump && can_jump){
-        can_jump = false;
-        velocity.y = -sqrtf(2.0f*GRAVITY*(TILE_SIZE));
+    else if(velocity.x > 0){
+        velocity.x -= ACCELERATION;
+    }
+    else if(velocity.x < 0){
+        velocity.x += ACCELERATION;
+    }
+    if(input.jump && on_ground){
+        on_ground = false;
+        velocity.y = -sqrtf(2.0f*GRAVITY*(JUMP_HEIGHT));
     }
 
     check_collision(map);
+    follow(map);
 
 }
 void Character::check_collision(Map &map){
@@ -133,7 +150,7 @@ void Character::check_collision(Map &map){
         if(is_hit(map.get_stage().map_data[y2][x1]) || is_hit(map.get_stage().map_data[y2][x2])){
             position.y = y1*TILE_SIZE;
             velocity.y = 0;
-            can_jump = true;
+            on_ground = true;
         }
     }
     //check top collision
@@ -158,13 +175,21 @@ void Character::check_collision(Map &map){
     }
 }
 bool Character::is_hit(int map_element){
+    if(map_element == Tile::Question){
+        map_element = 0;
+        return true;
+    }
     if(map_element != Tile::Empty && map_element != Tile::Cloud && map_element != Tile::Grass
     && map_element != Tile::B_Mountain && map_element != Tile::S_Mountain){
         return true;
     }
     return false;
 }
-void Character::follow(const int map_x, const int map_y){
+void Character::set_camera(const int map_x, const int map_y){
     this->map_x = map_x;
     this->map_y = map_y;
+
+}
+void Character::follow(Map &map){
+
 }

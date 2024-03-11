@@ -10,22 +10,22 @@ public:
     Character();
     ~Character();
 
-    SDL_Texture* load_texture(SDL_Renderer* &renderer, std::string filename);
     void set_frame();
     void draw(SDL_Renderer* &renderer);
     void handle_input(SDL_Renderer* &renderer, SDL_Event event);
     void update(Map &map);
     void check_collision(Map &map);
-    bool is_hit(int map_data);
-    void follow(const int map_x, const int map_y);
+    bool is_hit(int map_element);
+    void set_camera(const int map_x, const int map_y);
+    void follow(Map &map);
 
 private:
     Vector2f velocity;
-    SDL_Rect frames[4];
+    SDL_Rect frames[CHAR_FRAMES];
     int frame;
     bool face_right;
     Input input;
-    bool can_jump = false;
+    bool on_ground = false;
 
     int map_x, map_y;
 };

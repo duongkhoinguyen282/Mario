@@ -84,6 +84,6 @@ void Map::draw_map(SDL_Renderer* &renderer){
 Stage Map::get_stage(){
     return stage;
 }
-void Map:: set_camera(Map &map){
+void Map:: set_stage(Stage &stage){
     
 }

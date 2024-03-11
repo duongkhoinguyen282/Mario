@@ -1,7 +1,6 @@
 #ifndef RENDER_WINDOW_H
 #define RENDER_WINDOW_H
 
-#include<iostream>
 #include<defs.h>
 #include<entity.h>
 
