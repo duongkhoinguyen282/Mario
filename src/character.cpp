@@ -2,7 +2,7 @@
 
 Character::Character(){
     frame = 0;
-    position = {405,0};
+    position = {0,0};
     velocity = {0,0};
     size = {0,0};
     face_right = true;
@@ -108,14 +108,14 @@ void Character::check_collision(Map &map){
     //check horizontal
     //check right collision
     if(velocity.x > 0){
-        if(map.get_stage().map_data[y1][x2] != Tile::Empty || map.get_stage().map_data[y2][x2] != Tile::Empty){
+        if(is_hit(map.get_stage().map_data[y1][x2]) || is_hit(map.get_stage().map_data[y2][x2])){
             position.x = x1*TILE_SIZE;
             velocity.x = 0;
         }
     }
     //check left collision
     else if(velocity.x < 0){
-        if(map.get_stage().map_data[y1][x1] != Tile::Empty || map.get_stage().map_data[y2][x1] != Tile::Empty){
+        if(is_hit(map.get_stage().map_data[y1][x1]) || is_hit(map.get_stage().map_data[y2][x1])){
             position.x = (x1+1)*TILE_SIZE;
             velocity.x = 0;
         }
@@ -130,8 +130,7 @@ void Character::check_collision(Map &map){
     //check vertical
     //check bottom collision
     if(velocity.y > 0){
-        if(map.get_stage().map_data[y2][x1] != Tile::Empty ||
-        map.get_stage().map_data[y2][x2] != Tile::Empty){
+        if(is_hit(map.get_stage().map_data[y2][x1]) || is_hit(map.get_stage().map_data[y2][x2])){
             position.y = y1*TILE_SIZE;
             velocity.y = 0;
             can_jump = true;
@@ -139,8 +138,7 @@ void Character::check_collision(Map &map){
     }
     //check top collision
     else if(velocity.y < 0){
-        if(map.get_stage().map_data[y1][x1] != Tile::Empty ||
-        map.get_stage().map_data[y1][x2] != Tile::Empty){
+        if(is_hit(map.get_stage().map_data[y1][x1]) || is_hit(map.get_stage().map_data[y1][x2])){
             position.y = (y1+1)*TILE_SIZE;
             velocity.y = 0;
         }
@@ -159,11 +157,14 @@ void Character::check_collision(Map &map){
         position.x = WINDOW_WIDTH - size.x; 
     }
 }
-bool Character::is_hit(int map_data){
-    if(map_data != Tile::Empty || map_data != Tile::Cloud || map_data != Tile::B_Mountain || map_data != Tile::S_Mountain){
+bool Character::is_hit(int map_element){
+    if(map_element != Tile::Empty && map_element != Tile::Cloud && map_element != Tile::Grass
+    && map_element != Tile::B_Mountain && map_element != Tile::S_Mountain){
         return true;
     }
     return false;
 }
-
-
+void Character::follow(const int map_x, const int map_y){
+    this->map_x = map_x;
+    this->map_y = map_y;
+}

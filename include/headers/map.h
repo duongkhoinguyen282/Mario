@@ -14,6 +14,7 @@ public:
     void load_tiles(SDL_Renderer* &renderer);
     void draw_map(SDL_Renderer* &renderer);
     Stage get_stage();
+    void set_camera(Map &map);
 private:
     Stage stage;
     Entity tiles[MAX_TILES];

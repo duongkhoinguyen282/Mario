@@ -17,6 +17,7 @@ public:
     void update(Map &map);
     void check_collision(Map &map);
     bool is_hit(int map_data);
+    void follow(const int map_x, const int map_y);
 
 private:
     Vector2f velocity;
@@ -25,6 +26,8 @@ private:
     bool face_right;
     Input input;
     bool can_jump = false;
+
+    int map_x, map_y;
 };
 
 #endif
