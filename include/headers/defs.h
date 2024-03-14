@@ -18,8 +18,7 @@ const int BG_COLOR[3] {92,148,252};
 #define MAP_RENDER_WIDTH    16
 #define MAP_RENDER_HEIGHT   16
 
-const float SPEED = 150;
-const float ACCELERATION = 15;
+#define ACCELERATION 15;
 
 #define GRAVITY 9.8
 #define MAX_FALL_SPEED 50

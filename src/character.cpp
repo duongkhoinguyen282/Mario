@@ -2,6 +2,7 @@
 
 Character::Character(){
     frame = 0;
+    real_pos = {0,0};
     position = {0,0};
     velocity = {0,0};
     size = {45,45};
@@ -40,9 +41,8 @@ void Character::draw(SDL_Renderer* &renderer){
     //mario walk
     else if((input.left && !input.right) || (input.right && !input.left)){
         face_right = input.right & ~input.left;
-        // frame++;
-        // if(frame >= 4) frame = 1;
-        frame = 0;
+        frame++;
+        if(frame >= 4) frame = 1;
     }
     //mario brake
     else if(input.left && input.right){
@@ -84,40 +84,33 @@ void Character::handle_input(SDL_Renderer* &renderer, SDL_Event event){
         }
     }
 }
-void Character::update(Map &map){
+void Character::update(Stage &stage){
     velocity.x = 0;
     velocity.y += GRAVITY;
 
     if(velocity.y >= MAX_FALL_SPEED) velocity.y = MAX_FALL_SPEED;
     
     if(input.right){
-        velocity.x = std::min((velocity.x + ACCELERATION), SPEED);
-    }
-    else if(input.left){
-        velocity.x = std::max((velocity.x - ACCELERATION), -SPEED);
-    }
-    else if(velocity.x > 0){
-        velocity.x -= ACCELERATION;
-    }
-    else if(velocity.x < 0){
         velocity.x += ACCELERATION;
+    }
+    if(input.left){
+        velocity.x -= ACCELERATION;
     }
     if(input.jump && on_ground){
         on_ground = false;
         velocity.y = -sqrtf(2.0f*GRAVITY*(JUMP_HEIGHT));
     }
 
-    check_collision(map);
-    follow(map);
-
+    check_collision(stage);
+    follow(stage);
 }
-void Character::check_collision(Map &map){
+void Character::check_collision(Stage &stage){
     //setup corners' coordinates    
     int x1(0), x2(0);
     int y1(0), y2(0);
 
-    x1 = (position.x + velocity.x)/TILE_SIZE;
-    x2 = (position.x + velocity.x + size.x-1)/TILE_SIZE;
+    x1 = (position.x + velocity.x + stage.start.x)/TILE_SIZE;
+    x2 = (position.x + velocity.x + size.x-1 + stage.start.x)/TILE_SIZE;
 
     y1 = (position.y)/TILE_SIZE;
     y2 = (position.y + size.y - 1)/TILE_SIZE;
@@ -125,21 +118,21 @@ void Character::check_collision(Map &map){
     //check horizontal
     //check right collision
     if(velocity.x > 0){
-        if(is_hit(map.get_stage().map_data[y1][x2]) || is_hit(map.get_stage().map_data[y2][x2])){
-            position.x = x1*TILE_SIZE;
+        if(is_hit(stage.map_data[y1][x2]) || is_hit(stage.map_data[y2][x2])){
+            // position.x = (x1-stage.start.x)*TILE_SIZE;
             velocity.x = 0;
         }
     }
     //check left collision
     else if(velocity.x < 0){
-        if(is_hit(map.get_stage().map_data[y1][x1]) || is_hit(map.get_stage().map_data[y2][x1])){
-            position.x = (x1+1)*TILE_SIZE;
+        if(is_hit(stage.map_data[y1][x1]) || is_hit(stage.map_data[y2][x1])){
+            // position.x = (x1+1-stage.start.x)*TILE_SIZE;
             velocity.x = 0;
         }
     }
 
-    x1 = (position.x)/TILE_SIZE;
-    x2 = (position.x + size.x - 1)/TILE_SIZE;
+    x1 = (position.x + stage.start.x)/TILE_SIZE;
+    x2 = (position.x + size.x-1 + stage.start.x)/TILE_SIZE;
 
     y1 = (position.y + velocity.y)/TILE_SIZE;
     y2 = (position.y + size.y + velocity.y-1)/TILE_SIZE;
@@ -147,15 +140,17 @@ void Character::check_collision(Map &map){
     //check vertical
     //check bottom collision
     if(velocity.y > 0){
-        if(is_hit(map.get_stage().map_data[y2][x1]) || is_hit(map.get_stage().map_data[y2][x2])){
+        if(is_hit(stage.map_data[y2][x1]) || is_hit(stage.map_data[y2][x2])){
             position.y = y1*TILE_SIZE;
             velocity.y = 0;
             on_ground = true;
+            std::cout<<"y2: "<<y2+1<<" x1: "<<x1+1<<std::endl;
+            std::cout<<"y2: "<<y2+1<<" x2: "<<x2+1<<std::endl;
         }
     }
     //check top collision
     else if(velocity.y < 0){
-        if(is_hit(map.get_stage().map_data[y1][x1]) || is_hit(map.get_stage().map_data[y1][x2])){
+        if(is_hit(stage.map_data[y1][x1]) || is_hit(stage.map_data[y1][x2])){
             position.y = (y1+1)*TILE_SIZE;
             velocity.y = 0;
         }
@@ -185,11 +180,32 @@ bool Character::is_hit(int map_element){
     }
     return false;
 }
-void Character::set_camera(const int map_x, const int map_y){
+void Character::set_camera(int &map_x, int &map_y){
     this->map_x = map_x;
     this->map_y = map_y;
 
 }
-void Character::follow(Map &map){
-
+void Character::follow(Stage &stage){
+    if(stage.start.x != (stage.max.x - WINDOW_WIDTH) && position.x >= (WINDOW_WIDTH/2) && input.right){
+        position.x = WINDOW_WIDTH/2;
+        stage.start.x += velocity.x;
+        // std::cout<<stage.start.x<<std::endl;
+    }
+    else if(stage.start.x != 0 && position.x <= (WINDOW_WIDTH/2) && input.left){
+        position.x = WINDOW_WIDTH/2;
+        stage.start.x += velocity.x;
+        // std::cout<<stage.start.x<<std::endl;
+    }
+    if(stage.start.x <= 0){
+        stage.start.x = 0;
+    }
+    else if(stage.start.x + WINDOW_WIDTH >= stage.max.x){
+        stage.start.x = stage.max.x - WINDOW_WIDTH;
+    }
+}
+void Character::power_up(Stage &stage, int y1, int x1, int x2){
+    if(stage.map_data[y1][x1] == Tile::Wall || stage.map_data[y1][x2] == Tile::Wall){
+        stage.set_element(y1,x1,0);
+        stage.set_element(y1,x2,0);
+    }
 }

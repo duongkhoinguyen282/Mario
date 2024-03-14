@@ -10,7 +10,8 @@ void Map::load_map(std::string filename){
         return;
     }
 
-    stage.max = {0,0};
+    stage.max.x = 0;
+    stage.max.y = 0;
 
     for(int i = 0; i < MAP_HEIGHT; i++){
         for(int j = 0; j< MAP_WIDTH; j++){
@@ -54,7 +55,8 @@ void Map::load_tiles(SDL_Renderer* &renderer){
     tiles[Tile::Castle] = castle;
 
 }
-void Map::draw_map(SDL_Renderer* &renderer){
+void Map::draw_map(SDL_Renderer* &renderer, Stage &stage){
+    this -> stage = stage;
     int x1(0), x2(0);
     int y1(0), y2(0);
 
@@ -84,6 +86,9 @@ void Map::draw_map(SDL_Renderer* &renderer){
 Stage Map::get_stage(){
     return stage;
 }
-void Map:: set_stage(Stage &stage){
-    
+void Map::set_stage(Stage &stage){
+    this -> stage = stage;
+}
+void Map::set_element(int &map_data, int new_data){
+    map_data = new_data;
 }

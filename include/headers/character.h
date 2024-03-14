@@ -13,14 +13,16 @@ public:
     void set_frame();
     void draw(SDL_Renderer* &renderer);
     void handle_input(SDL_Renderer* &renderer, SDL_Event event);
-    void update(Map &map);
-    void check_collision(Map &map);
+    void update(Stage &stage);
+    void check_collision(Stage &stage);
     bool is_hit(int map_element);
-    void set_camera(const int map_x, const int map_y);
-    void follow(Map &map);
+    void set_camera(int &map_x, int &map_y);
+    void follow(Stage &stage);
+    void power_up(Stage &stage, int y1, int x1, int x2);
 
 private:
     Vector2f velocity;
+    Vector2i real_pos;
     SDL_Rect frames[CHAR_FRAMES];
     int frame;
     bool face_right;

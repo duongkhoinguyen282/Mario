@@ -11,6 +11,7 @@ int main(int argc, char *argv[]){
 
 	//init map
 	Map map0; map0.load_map("res/map/map.dat"); map0.load_tiles(renderer);
+	Stage stage0 = map0.get_stage();
 
 	//init player
 	Character mario;	mario.set_frame();
@@ -34,9 +35,13 @@ int main(int argc, char *argv[]){
 
 		// clear and render
 		SDL_RenderClear(renderer);
-		map0.draw_map(renderer);
-		mario.update(map0);
+		map0.draw_map(renderer, stage0);
+		// mario.set_camera(stage0.start.x, stage0.start.y);
+		mario.update(stage0);
 		mario.draw(renderer);
+
+		map0.set_stage(stage0);
+
 		SDL_RenderPresent(renderer);
 		SDL_Delay(1000 / 30);
 	}
