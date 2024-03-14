@@ -4,7 +4,7 @@
 #include<render_window.h>
 #include<map.h>
 #include<ctime>
-// #include<animation.h>
 #include<character.h>
+#include<timer.h>
 
 #endif

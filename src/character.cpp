@@ -28,6 +28,9 @@ void Character::set_frame(){
 }
 void Character::draw(SDL_Renderer* &renderer){
     //load mario texture
+
+    // std::string m = "mario";
+
     if(face_right){
         texture = load_texture(renderer,"res/image/mario_right.png");
     }
@@ -58,7 +61,7 @@ void Character::draw(SDL_Renderer* &renderer){
 
     SDL_RenderCopy(renderer, texture, curr_frame, &dest);
 }
-void Character::handle_input(SDL_Renderer* &renderer, SDL_Event event){
+void Character::handle_input(SDL_Event event){
     if(event.type == SDL_KEYDOWN){
         if(event.key.keysym.sym == SDLK_RIGHT){
             face_right = true;
@@ -144,18 +147,23 @@ void Character::check_collision(Stage &stage){
             position.y = y1*TILE_SIZE;
             velocity.y = 0;
             on_ground = true;
-            std::cout<<"y2: "<<y2+1<<" x1: "<<x1+1<<std::endl;
-            std::cout<<"y2: "<<y2+1<<" x2: "<<x2+1<<std::endl;
+            // std::cout<<"y2: "<<y2+1<<" x1: "<<x1+1<<std::endl;
+            // std::cout<<"y2: "<<y2+1<<" x2: "<<x2+1<<std::endl;
         }
+        if(y2 >= 15) position.y = 0;
+        //     std::cout<<"y2: "<<y2+1<<" x1: "<<x1+1<<std::endl;
+        //     std::cout<<"y2: "<<y2+1<<" x2: "<<x2+1<<std::endl;
     }
     //check top collision
     else if(velocity.y < 0){
         if(is_hit(stage.map_data[y1][x1]) || is_hit(stage.map_data[y1][x2])){
             position.y = (y1+1)*TILE_SIZE;
             velocity.y = 0;
+            // stage.coord.x = x1; stage.coord.y = y1;
+            // stage.hit = true;
+            // stage.block = stage.map_data[y1][x1];
         }
     }
-    
     position.x += velocity.x;
     position.y += velocity.y;
 
@@ -169,13 +177,13 @@ void Character::check_collision(Stage &stage){
         position.x = WINDOW_WIDTH - size.x; 
     }
 }
-bool Character::is_hit(int map_element){
-    if(map_element == Tile::Question){
-        map_element = 0;
-        return true;
-    }
+bool Character::is_hit(int &map_element){
+    // if(velocity.y < 0 && map_element == Tile::Wall){
+    //     map_element = 0;
+    //     return true;
+    // }
     if(map_element != Tile::Empty && map_element != Tile::Cloud && map_element != Tile::Grass
-    && map_element != Tile::B_Mountain && map_element != Tile::S_Mountain){
+    && map_element != Tile::Mountain && map_element != Tile::Castle){
         return true;
     }
     return false;
@@ -186,13 +194,13 @@ void Character::set_camera(int &map_x, int &map_y){
 
 }
 void Character::follow(Stage &stage){
-    if(stage.start.x != (stage.max.x - WINDOW_WIDTH) && position.x >= (WINDOW_WIDTH/2) && input.right){
-        position.x = WINDOW_WIDTH/2;
+    if(stage.start.x != (stage.max.x - WINDOW_WIDTH) && position.x >= (WINDOW_WIDTH/4) && input.right){
+        position.x = WINDOW_WIDTH/4;
         stage.start.x += velocity.x;
         // std::cout<<stage.start.x<<std::endl;
     }
-    else if(stage.start.x != 0 && position.x <= (WINDOW_WIDTH/2) && input.left){
-        position.x = WINDOW_WIDTH/2;
+    else if(stage.start.x != 0 && position.x <= (WINDOW_WIDTH/4) && input.left){
+        position.x = WINDOW_WIDTH/4;
         stage.start.x += velocity.x;
         // std::cout<<stage.start.x<<std::endl;
     }

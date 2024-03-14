@@ -1,10 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include<SDL.h>
-#include<SDL_image.h>
 #include<structs.h>
-#include<SDL_timer.h>
 
 class Entity{
 public:

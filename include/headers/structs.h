@@ -28,6 +28,9 @@ struct Stage{
     Vector2i max = {0,0};
     int map_data[MAP_HEIGHT][MAP_WIDTH];
     std::string filename;
+    bool hit = false;
+    int block = 0;
+    Vector2i coord;
 
     void set_element(int y, int x, int new_data){
         map_data[y][x] = new_data;

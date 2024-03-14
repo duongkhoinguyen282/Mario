@@ -3,7 +3,7 @@
 Entity::Entity(){
     position = {0,0};
     texture = nullptr;
-    size= {0,0};
+    size = {0,0};
 }
 Entity::~Entity(){
     // free();
@@ -11,7 +11,7 @@ Entity::~Entity(){
 Entity::Entity(Vector2i position, SDL_Texture* texture){
     this->position = position;
     this->texture = texture;
-    this->size = Vector2i(TILE_SIZE,TILE_SIZE);
+    this->size = Vector2i(1,1);
 }
 Entity::Entity(Vector2i position,Vector2i size, SDL_Texture* texture){
     this->position = position;

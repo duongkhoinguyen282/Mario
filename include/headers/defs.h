@@ -2,6 +2,9 @@
 #define DEFS_H
 
 #include<bits/stdc++.h>
+#include<SDL.h>
+#include<SDL_image.h>
+#include<SDL_timer.h>
 
 #define WINDOW_WIDTH 720
 #define WINDOW_HEIGHT 720
@@ -18,13 +21,16 @@ const int BG_COLOR[3] {92,148,252};
 #define MAP_RENDER_WIDTH    16
 #define MAP_RENDER_HEIGHT   16
 
+#define FPS 30
+
 #define ACCELERATION 15;
 
 #define GRAVITY 9.8
-#define MAX_FALL_SPEED 50
+#define MAX_FALL_SPEED 45
 #define CHAR_FRAMES 6
 #define JUMP_HEIGHT (TILE_SIZE*4)
 
-enum Tile {Empty, Ground, Wall, Question, Block, Cloud, Grass, B_Mountain, S_Mountain, Castle};
+enum Tile {Empty, Ground, Wall, Question, Block, Cloud, Grass, Mountain, Pipe, 
+            Castle = 19};
 
 #endif
