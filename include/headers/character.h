@@ -4,8 +4,11 @@
 #include<entity.h>
 #include<map.h>
 
-class Character: public Entity
-{
+#define ACCELERATION 15;
+#define CHAR_FRAMES 7
+#define JUMP_HEIGHT (TILE_SIZE*4)
+
+class Character: public Entity{
 public:
     Character();
     ~Character();
@@ -16,20 +19,19 @@ public:
     void update(Stage &stage);
     void check_collision(Stage &stage);
     bool is_hit(int &map_element);
-    void set_camera(int &map_x, int &map_y);
     void follow(Stage &stage);
+    void die();
+    bool get_death(){return is_dead;};
     void power_up(Stage &stage, int y1, int x1, int x2);
 
 private:
     Vector2f velocity;
-    Vector2i real_pos;
     SDL_Rect frames[CHAR_FRAMES];
     int frame;
     bool face_right;
     Input input;
     bool on_ground = false;
-
-    int map_x, map_y;
+    bool is_dead = false;
 };
 
 #endif

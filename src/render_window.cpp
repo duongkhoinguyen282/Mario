@@ -27,9 +27,3 @@ void quit_SDL(SDL_Window* &window, SDL_Renderer* &renderer){
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
-void SDL_RenderEntity(SDL_Renderer* &renderer, Entity &entity){
-    SDL_Rect block;
-    block.w = entity.get_size().x*TILE_SIZE; block.h = entity.get_size().y*TILE_SIZE;
-    block.x = entity.get_position().x; block.y = entity.get_position().y;
-    SDL_RenderCopy(renderer, entity.get_texture(), nullptr, &block);
-}

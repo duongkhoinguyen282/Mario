@@ -23,14 +23,10 @@ const int BG_COLOR[3] {92,148,252};
 
 #define FPS 30
 
-#define ACCELERATION 15;
-
 #define GRAVITY 9.8
 #define MAX_FALL_SPEED 45
-#define CHAR_FRAMES 6
-#define JUMP_HEIGHT (TILE_SIZE*4)
 
-enum Tile {Empty, Ground, Wall, Question, Block, Cloud, Grass, Mountain, Pipe, 
-            Castle = 19};
+enum Tile {Empty, Ground, Wall, Question, Block, Cloud, Grass, Mountain, Pipe, SP_Block,
+            Castle = 19, Ques_Aft_Hit = 13};
 
 #endif

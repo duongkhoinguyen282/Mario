@@ -2,7 +2,6 @@
 
 Character::Character(){
     frame = 0;
-    real_pos = {0,0};
     position = {0,0};
     velocity = {0,0};
     size = {45,45};
@@ -10,8 +9,7 @@ Character::Character(){
     input.right = false;
     input.left = false;
     input.jump = false;
-    map_x = 0;
-    map_y = 0;
+    set_frame();
 }
 
 Character::~Character(){}
@@ -27,10 +25,9 @@ void Character::set_frame(){
     }
 }
 void Character::draw(SDL_Renderer* &renderer){
-    //load mario texture
-
+    free();
     // std::string m = "mario";
-
+    //load mario texture
     if(face_right){
         texture = load_texture(renderer,"res/image/mario_right.png");
     }
@@ -55,6 +52,11 @@ void Character::draw(SDL_Renderer* &renderer){
     else{
         frame = 0;
     }
+    //mario die
+    if(is_dead) {
+        free();
+        texture = load_texture(renderer, "res/image/mario_die.png");
+    }
 
     SDL_Rect* curr_frame = &frames[frame];
     SDL_Rect dest = {position.x, position.y, size.x, size.y}; 
@@ -62,6 +64,12 @@ void Character::draw(SDL_Renderer* &renderer){
     SDL_RenderCopy(renderer, texture, curr_frame, &dest);
 }
 void Character::handle_input(SDL_Event event){
+    if(is_dead){
+        input.right = false;
+        input.left = false;
+        input.jump = false;       
+        return;
+    }
     if(event.type == SDL_KEYDOWN){
         if(event.key.keysym.sym == SDLK_RIGHT){
             face_right = true;
@@ -73,6 +81,16 @@ void Character::handle_input(SDL_Event event){
         }
         if(event.key.keysym.sym == SDLK_UP){
             input.jump = true;
+        }
+        if(event.key.keysym.sym == SDLK_k){
+            die();
+        }
+        if(event.key.keysym.sym == SDLK_b){
+            position.y -= 45;
+            size.y = 90;
+        }
+        if(event.key.keysym.sym == SDLK_s){
+            size.y = 45;
         }
     }
     else if(event.type == SDL_KEYUP){
@@ -121,15 +139,21 @@ void Character::check_collision(Stage &stage){
     //check horizontal
     //check right collision
     if(velocity.x > 0){
-        if(is_hit(stage.map_data[y1][x2]) || is_hit(stage.map_data[y2][x2])){
-            // position.x = (x1-stage.start.x)*TILE_SIZE;
+        if(is_hit(stage.map_data[y1][x2]) || is_hit(stage.map_data[y2][x2]) || is_hit(stage.map_data[(y2+y1)/2][x2])){
+            position.x = (x1)*TILE_SIZE-stage.start.x;
             velocity.x = 0;
         }
+        // if(x1 == 202){
+        //     for(int i = 0; i < 4; i++){
+        //         stage.map_data[14][x1+i] = 0;
+        //         stage.map_data[15][x1+i] = 0;
+        //     }
+        // }
     }
     //check left collision
     else if(velocity.x < 0){
-        if(is_hit(stage.map_data[y1][x1]) || is_hit(stage.map_data[y2][x1])){
-            // position.x = (x1+1-stage.start.x)*TILE_SIZE;
+        if(is_hit(stage.map_data[y1][x1]) || is_hit(stage.map_data[y2][x1]) || is_hit(stage.map_data[(y2+y1)/2][x1])){
+            position.x = (x1+1)*TILE_SIZE-stage.start.x;
             velocity.x = 0;
         }
     }
@@ -142,7 +166,7 @@ void Character::check_collision(Stage &stage){
 
     //check vertical
     //check bottom collision
-    if(velocity.y > 0){
+    if(velocity.y > 0 && !is_dead){
         if(is_hit(stage.map_data[y2][x1]) || is_hit(stage.map_data[y2][x2])){
             position.y = y1*TILE_SIZE;
             velocity.y = 0;
@@ -150,18 +174,22 @@ void Character::check_collision(Stage &stage){
             // std::cout<<"y2: "<<y2+1<<" x1: "<<x1+1<<std::endl;
             // std::cout<<"y2: "<<y2+1<<" x2: "<<x2+1<<std::endl;
         }
-        if(y2 >= 15) position.y = 0;
-        //     std::cout<<"y2: "<<y2+1<<" x1: "<<x1+1<<std::endl;
-        //     std::cout<<"y2: "<<y2+1<<" x2: "<<x2+1<<std::endl;
+        if(position.y > (13.5)*TILE_SIZE) {
+            die();
+        }
+            // std::cout<<"y2: "<<y2+1<<" x1: "<<x1+1<<std::endl;
+            // std::cout<<"y2: "<<y2+1<<" x2: "<<x2+1<<std::endl;
     }
     //check top collision
-    else if(velocity.y < 0){
+    else if(velocity.y < 0 && !is_dead){
         if(is_hit(stage.map_data[y1][x1]) || is_hit(stage.map_data[y1][x2])){
             position.y = (y1+1)*TILE_SIZE;
             velocity.y = 0;
-            // stage.coord.x = x1; stage.coord.y = y1;
-            // stage.hit = true;
-            // stage.block = stage.map_data[y1][x1];
+            stage.coord.x = is_hit(stage.map_data[y1][x1])? x1 : x2; 
+            stage.coord.y = y1;
+            if(stage.map_data[stage.coord.y][stage.coord.x] == Tile::Question) stage.map_data[stage.coord.y][stage.coord.x] = Tile::Ques_Aft_Hit;
+            // if(stage.map_data[stage.coord.y][stage.coord.x] == Tile::Wall) stage.map_data[stage.coord.y][stage.coord.x] = Tile::Empty;
+            stage.block = stage.map_data[stage.coord.y][stage.coord.x];
         }
     }
     position.x += velocity.x;
@@ -178,21 +206,13 @@ void Character::check_collision(Stage &stage){
     }
 }
 bool Character::is_hit(int &map_element){
-    // if(velocity.y < 0 && map_element == Tile::Wall){
-    //     map_element = 0;
-    //     return true;
-    // }
     if(map_element != Tile::Empty && map_element != Tile::Cloud && map_element != Tile::Grass
     && map_element != Tile::Mountain && map_element != Tile::Castle){
         return true;
     }
     return false;
 }
-void Character::set_camera(int &map_x, int &map_y){
-    this->map_x = map_x;
-    this->map_y = map_y;
 
-}
 void Character::follow(Stage &stage){
     if(stage.start.x != (stage.max.x - WINDOW_WIDTH) && position.x >= (WINDOW_WIDTH/4) && input.right){
         position.x = WINDOW_WIDTH/4;
@@ -211,9 +231,14 @@ void Character::follow(Stage &stage){
         stage.start.x = stage.max.x - WINDOW_WIDTH;
     }
 }
+
+void Character::die(){
+    is_dead = true;
+    velocity.y = -sqrtf(2.0f*GRAVITY*(JUMP_HEIGHT));
+    free();
+}
+
 void Character::power_up(Stage &stage, int y1, int x1, int x2){
     if(stage.map_data[y1][x1] == Tile::Wall || stage.map_data[y1][x2] == Tile::Wall){
-        stage.set_element(y1,x1,0);
-        stage.set_element(y1,x2,0);
     }
 }

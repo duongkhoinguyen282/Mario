@@ -31,10 +31,6 @@ struct Stage{
     bool hit = false;
     int block = 0;
     Vector2i coord;
-
-    void set_element(int y, int x, int new_data){
-        map_data[y][x] = new_data;
-    }
 };
 
 struct Input{

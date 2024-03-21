@@ -36,17 +36,19 @@ void Map::load_tiles(SDL_Renderer* &renderer){
     Entity ground = Entity({0,0}, ground.load_texture(renderer, "res/image/ground.png"));
     Entity wall = Entity({0,0}, wall.load_texture(renderer, "res/image/wall.png"));
     Entity question = Entity({0,0}, question.load_texture(renderer, "res/image/question.png"));
+    Entity ques_aft_hit = Entity({0,0}, ques_aft_hit.load_texture(renderer, "res/image/ques_aft_hit.png"));
     Entity block = Entity({0,0}, block.load_texture(renderer, "res/image/block.png"));
-    Entity cloud = Entity({0,0}, {2,2}, cloud.load_texture(renderer, "res/image/cloud.png"));
-    Entity grass = Entity({0,0}, {2,2}, grass.load_texture(renderer, "res/image/grass.png"));
-    Entity mountain = Entity({0,0}, {5,3}, mountain.load_texture(renderer, "res/image/mountain.png"));
-    Entity pipe = Entity({0,0}, {2,4}, pipe.load_texture(renderer, "res/image/pipe.png"));
-    Entity castle = Entity({0,0}, {5,5}, castle.load_texture(renderer, "res/image/castle.png"));
+    Entity cloud = Entity({0,0}, {90,90}, cloud.load_texture(renderer, "res/image/cloud.png"));
+    Entity grass = Entity({0,0}, {90,90}, grass.load_texture(renderer, "res/image/grass.png"));
+    Entity mountain = Entity({0,0}, {225,135}, mountain.load_texture(renderer, "res/image/mountain.png"));
+    Entity pipe = Entity({0,0}, {90,180}, pipe.load_texture(renderer, "res/image/pipe.png"));
+    Entity castle = Entity({0,0}, {225,225}, castle.load_texture(renderer, "res/image/castle.png"));
     
     tiles[Tile::Empty] = Entity();
     tiles[Tile::Ground] = ground;
     tiles[Tile::Wall] = wall;
     tiles[Tile::Question] = question;
+    tiles[Tile::Ques_Aft_Hit] = ques_aft_hit;
     tiles[Tile::Block] = block;
     tiles[Tile::Cloud] = cloud;
     tiles[Tile::Grass] = grass;
@@ -75,15 +77,15 @@ void Map::draw_map(SDL_Renderer* &renderer, Stage &stage){
         for(int j = x1; j < x2; j+=TILE_SIZE){
             int val = stage.map_data[map_y][map_x];
             if(val > 0){
-                // if(map_y == stage.coord.y && map_x == stage.coord.x && stage.hit){
-                //     std::cout<<"hit"<<std::endl;
-                //     std::cout<<val<<std::endl;
-                //     stage.hit = true;
-                //     stage.coord = {-1,-1};         
-                // }
-                tiles[val].set_position({j,i - stage.hit*15});
-                // stage.hit = false;    
-                SDL_RenderEntity(renderer, tiles[val]);
+                if(map_y == stage.coord.y && map_x == stage.coord.x && val == stage.block){
+                    // std::cout<<"hit"<<std::endl;
+                    // std::cout<<val<<std::endl;
+                    stage.hit = true;
+                    stage.coord = {-1,-1};         
+                }
+                tiles[val].set_position({j,i - stage.hit*20});
+                tiles[val].draw(renderer);
+                stage.hit = false;    
             }
             map_x++;
         }
@@ -99,3 +101,8 @@ void Map::set_stage(Stage &stage){
 void Map::set_element(int &map_data, int new_data){
     map_data = new_data;
 }
+
+void Map::set_tile(int tile_val, Vector2i position){
+    tiles[tile_val].set_position(position);
+}
+

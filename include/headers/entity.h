@@ -14,6 +14,7 @@ public:
     Vector2i get_size();
     SDL_Texture* get_texture();
     SDL_Texture* load_texture(SDL_Renderer* &renderer, std::string filename);
+    void draw(SDL_Renderer* &renderer);
     void free();
 
 protected:
