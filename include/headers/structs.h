@@ -29,14 +29,15 @@ struct Stage{
     int map_data[MAP_HEIGHT][MAP_WIDTH];
     std::string filename;
     bool hit = false;
-    int block = 0;
-    Vector2i coord;
+    int tile_value = 0;
+    Vector2i tile_coord;
 };
 
 struct Input{
     bool left = false;
     bool right = false;
     bool jump = false;
+    bool crouch = false;
 };
 
 #endif

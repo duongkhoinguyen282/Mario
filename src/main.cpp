@@ -1,7 +1,8 @@
 #include<main.h>
-#include<goomba.h>
 
 bool is_open = true;
+int lives = 0;
+int score = -1;
 
 int main(int argc, char *argv[]){
 	srand(time(0));
@@ -24,6 +25,9 @@ int main(int argc, char *argv[]){
 	//init goombas
 	Goomba* goombas = goombas->spawn();
 
+	//init mushroom
+	Mushroom mushroom;
+
 	// animation loop
 	while (is_open) {
 		timer.start();
@@ -43,13 +47,28 @@ int main(int argc, char *argv[]){
 
 		// clear and render
 		SDL_RenderClear(renderer);
-		map0.draw_map(renderer,stage0);
+
+		if(mushroom.get_spawning()){
+			mushroom.update(stage0, mario); mushroom.draw(renderer);
+			map0.draw_map(renderer,stage0);
+		}
+		else{
+			map0.draw_map(renderer,stage0);
+			mushroom.update(stage0, mario); mushroom.draw(renderer);
+		}
 		
 		goombas->update_and_draw(renderer, stage0, goombas, mario);
 		
-		mario.update(stage0);
-		mario.draw(renderer);
-
+		mario.update(stage0); mario.draw(renderer);
+		if(lives != mario.lives){
+			std::cout<<"Lives: "<<mario.lives<<std::endl;
+			lives = mario.lives;
+		}
+		if(score != mario.score){
+			std::cout<<"Score: "<<mario.score<<std::endl;
+			score = mario.score;
+		}
+			
 		SDL_RenderPresent(renderer);
 
 		elapsed_time = timer.get_ticks();

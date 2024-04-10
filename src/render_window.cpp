@@ -7,6 +7,7 @@ void log_SDL_error(std::ostream &os, const std::string &msg, bool fatal){
         exit(1);
     }
 }
+
 void init_SDL(SDL_Window* &window, SDL_Renderer* &renderer){
     if(SDL_Init(SDL_INIT_EVERYTHING)!= 0) {
         log_SDL_error(std::cout,"SDL init failed!",true);
@@ -21,9 +22,11 @@ void init_SDL(SDL_Window* &window, SDL_Renderer* &renderer){
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"linear");
     SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
     SDL_SetRenderDrawColor(renderer, BG_COLOR[0], BG_COLOR[1], BG_COLOR[2], 255);
-}   
+}  
+
 void quit_SDL(SDL_Window* &window, SDL_Renderer* &renderer){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    IMG_Quit();
     SDL_Quit();
 }

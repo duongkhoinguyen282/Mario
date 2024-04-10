@@ -12,7 +12,10 @@ public:
     Enemy();
     ~Enemy();
 
-    void get_camera(const Stage &stage);
+    void get_camera(const Stage &stage){
+        map_x = stage.start.x;
+        map_y = stage.start.y;
+    }
 
 protected:
     Vector2i render_pos;
@@ -20,8 +23,6 @@ protected:
     SDL_Rect frames[ENEMY_FRAMES];
     int frame;
     bool face_left;
-    int spawn_time;
-    bool on_ground = false;
     bool is_dead = false;
 
     int map_x, map_y;

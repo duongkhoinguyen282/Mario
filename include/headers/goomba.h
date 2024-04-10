@@ -29,7 +29,6 @@ public:
 
 private:
     SDL_Rect frames[GOOMBA_FRAMES];
-
 };
 
 #endif

@@ -2,9 +2,9 @@
 #define MAIN_H
 
 #include<render_window.h>
-#include<map.h>
 #include<ctime>
-#include<character.h>
 #include<timer.h>
+#include<goomba.h>
+#include<mushroom.h>
 
 #endif

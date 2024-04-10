@@ -15,7 +15,7 @@ public:
     Stage get_stage();
     void set_stage(Stage &stage);
     void set_element(int &map_data, int new_data);
-    void set_tile(int tile_val, Vector2i position);
+
 private:
     Stage stage;
     Entity tiles[MAX_TILES];

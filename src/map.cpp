@@ -16,8 +16,8 @@ void Map::load_map(std::string filename){
     for(int i = 0; i < MAP_HEIGHT; i++){
         for(int j = 0; j< MAP_WIDTH; j++){
             r_file>>stage.map_data[i][j];
-            int val = stage.map_data[i][j];
-            if(val>0){
+            int value = stage.map_data[i][j];
+            if(value>0){
                 if(j>stage.max.x){
                     stage.max.x = j;
                 }
@@ -32,6 +32,7 @@ void Map::load_map(std::string filename){
     stage.start.x = 0; stage.start.y = 0;
     stage.filename = filename;
 }
+
 void Map::load_tiles(SDL_Renderer* &renderer){
     Entity ground = Entity({0,0}, ground.load_texture(renderer, "res/image/ground.png"));
     Entity wall = Entity({0,0}, wall.load_texture(renderer, "res/image/wall.png"));
@@ -57,52 +58,49 @@ void Map::load_tiles(SDL_Renderer* &renderer){
     tiles[Tile::Castle] = castle;
 
 }
+
 void Map::draw_map(SDL_Renderer* &renderer, Stage &stage){
     this -> stage = stage;
     int x1(0), x2(0);
     int y1(0), y2(0);
 
-    int map_x(0), map_y(0);
+    int mx(0), my(0);
 
-    map_x = stage.start.x/TILE_SIZE;
+    mx = stage.start.x/TILE_SIZE;
     x1 = (stage.start.x %TILE_SIZE)*(-1);
     x2 = x1 + WINDOW_WIDTH + (x1 == 0 ? 0 : TILE_SIZE);
 
-    map_y = stage.start.y/TILE_SIZE;
+    my = stage.start.y/TILE_SIZE;
     y1 = (stage.start.y %TILE_SIZE)*(-1);
     y2 = y1 + WINDOW_WIDTH + (y1 == 0 ? 0 : TILE_SIZE);
     
     for(int i = y1; i < y2; i+=TILE_SIZE){
-        map_x = stage.start.x/TILE_SIZE;
+        mx = stage.start.x/TILE_SIZE;
         for(int j = x1; j < x2; j+=TILE_SIZE){
-            int val = stage.map_data[map_y][map_x];
-            if(val > 0){
-                if(map_y == stage.coord.y && map_x == stage.coord.x && val == stage.block){
-                    // std::cout<<"hit"<<std::endl;
-                    // std::cout<<val<<std::endl;
+            int value = stage.map_data[my][mx];
+            if(value > 0){
+                if(my == stage.tile_coord.y && mx == stage.tile_coord.x && value == stage.tile_value){
                     stage.hit = true;
-                    stage.coord = {-1,-1};         
+                    stage.tile_coord = {-1,-1};   
                 }
-                tiles[val].set_position({j,i - stage.hit*20});
-                tiles[val].draw(renderer);
+                tiles[value].set_position({j,i - stage.hit*20});
+                tiles[value].draw(renderer);
                 stage.hit = false;    
             }
-            map_x++;
+            mx++;
         }
-        map_y++;
+        my++;
     }
 }
+
 Stage Map::get_stage(){
     return stage;
 }
+
 void Map::set_stage(Stage &stage){
     this -> stage = stage;
 }
+
 void Map::set_element(int &map_data, int new_data){
     map_data = new_data;
 }
-
-void Map::set_tile(int tile_val, Vector2i position){
-    tiles[tile_val].set_position(position);
-}
-
