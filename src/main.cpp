@@ -25,8 +25,18 @@ int main(int argc, char *argv[]){
 	//init goombas
 	Goomba* goombas = goombas->spawn();
 
-	//init mushroom
+	//init items
 	Mushroom mushroom;
+	Starman starman;
+	Coin coin;
+	Flag flag;
+
+	//init theme music
+	Mix_Music* music;
+    music = Mix_LoadMUS("res/sound/theme_song.wav");
+	Mix_PlayMusic(music, -1);
+
+	bool is_paused = false;
 
 	// animation loop
 	while (is_open) {
@@ -40,21 +50,29 @@ int main(int argc, char *argv[]){
                 break;
             }
 			else if(event.key.keysym.sym == SDLK_ESCAPE && event.type == SDL_KEYDOWN){ 
-                system("PAUSE");
+                event.window.event = SDL_WINDOWEVENT_FOCUS_GAINED;
+				SDL_GL_SwapWindow(window);
             }
 			mario.handle_input(event);
 		}
 
 		// clear and render
 		SDL_RenderClear(renderer);
+		// mario.invincible = true;
 
-		if(mushroom.get_spawning()){
+		flag.update(stage0, mario); flag.draw(renderer);
+
+		if(mushroom.get_spawning() || starman.get_spawning() || coin.get_spawning()){
 			mushroom.update(stage0, mario); mushroom.draw(renderer);
+			starman.update(stage0, mario); starman.draw(renderer);
+			coin.update(stage0, mario); coin.draw(renderer);
 			map0.draw_map(renderer,stage0);
 		}
 		else{
 			map0.draw_map(renderer,stage0);
 			mushroom.update(stage0, mario); mushroom.draw(renderer);
+			starman.update(stage0, mario); starman.draw(renderer);
+			coin.update(stage0, mario); coin.draw(renderer);
 		}
 		
 		goombas->update_and_draw(renderer, stage0, goombas, mario);
@@ -79,8 +97,11 @@ int main(int argc, char *argv[]){
 			if(delay_time > 0) SDL_Delay(delay_time);
 		}
 	}
+	Mix_HaltMusic();
 
 	//destroy and quit
+	// Mix_FreeMusic(music);
+	Mix_Quit();
 	quit_SDL(window,renderer);
 
 	return 0;

@@ -63,7 +63,7 @@ void Character::draw(SDL_Renderer* &renderer){
         frame = 0;
     }
 
-    //invincible mariob
+    //invincible mario
     if(invincible){
         SDL_SetTextureAlphaMod(texture,255*(invincible_time%2));
     }
@@ -82,9 +82,6 @@ void Character::draw(SDL_Renderer* &renderer){
 
 void Character::handle_input(SDL_Event event){
     if(is_dead){
-        input.right = false;
-        input.left = false;
-        input.jump = false;       
         return;
     }
     if(event.type == SDL_KEYDOWN){
@@ -106,12 +103,12 @@ void Character::handle_input(SDL_Event event){
         if(event.key.keysym.sym == SDLK_k){
             die();
         }
-        if(event.key.keysym.sym == SDLK_b && status == "normal"){
-            power_up();
-        }
-        if(event.key.keysym.sym == SDLK_s){
-            normalize();
-        }
+        // if(event.key.keysym.sym == SDLK_b && status == "normal"){
+        //     power_up();
+        // }
+        // if(event.key.keysym.sym == SDLK_s){
+        //     normalize();
+        // }
     }
     else if(event.type == SDL_KEYUP){
         if(event.key.keysym.sym == SDLK_RIGHT){
@@ -142,16 +139,17 @@ void Character::update(Stage &stage){
     
     //go right
     if(input.right && !is_dead){
-        velocity.x += ACCELERATION;
+        velocity.x += acceleration;
     }
 
     //go left
     if(input.left && !is_dead){
-        velocity.x -= ACCELERATION;
+        velocity.x -= acceleration;
     }
 
     //jump
     if(input.jump && on_ground && !input.crouch && !is_dead){
+        Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/jump.wav"), 0);
         on_ground = false;
         velocity.y = -sqrtf(2.0f*GRAVITY*(JUMP_HEIGHT));
     }
@@ -166,9 +164,10 @@ void Character::update(Stage &stage){
         invincible_time--;
         if(invincible_time == 0){
             invincible_time = INVINCIBLE_TIME;
+            acceleration = ACCELERATION;
             invincible = false;
         }
-        std::cout<<invincible_time<<std::endl;
+        // std::cout<<invincible_time<<std::endl;
     }
 
     check_collision(stage);
@@ -222,14 +221,10 @@ void Character::check_collision(Stage &stage){
             velocity.y = 0;
             on_ground = true;
             can_crouch = ~input.crouch & on_ground;
-            // std::cout<<"y2: "<<y2+1<<" x1: "<<x1+1<<std::endl;
-            // std::cout<<"y2: "<<y2+1<<" x2: "<<x2+1<<std::endl;
         }
         if(position.y > (13.5)*TILE_SIZE) {
             die();
         }
-            // std::cout<<"y2: "<<y2+1<<" x1: "<<x1+1<<std::endl;
-            // std::cout<<"y2: "<<y2+1<<" x2: "<<x2+1<<std::endl;
     }
     //check top collision
     else if(velocity.y < 0 && !is_dead){
@@ -243,16 +238,23 @@ void Character::check_collision(Stage &stage){
             stage.tile_coord.y = y1;
             if(stage.map_data[stage.tile_coord.y][stage.tile_coord.x] == Tile::Question){
                 stage.map_data[stage.tile_coord.y][stage.tile_coord.x] = Tile::Ques_Aft_Hit;
-                hit_mushroom = std::max(rand()%10-5, 0);
-                if(hit_mushroom != 0 && hit_mushroom != 4 && status == "big"){
-                    hit_mushroom = 0;
-                    score += 100;
+                hit_item = std::max(rand()%11-5, 5);
+                if((hit_item == 1 || hit_item == 2 || hit_item == 3) && status == "big"){
+                    hit_item = 6;
                 }
-                mushroom_spawn_pos = stage.tile_coord; 
+                item_spawn_pos = stage.tile_coord; 
+            }
+            if(stage.map_data[stage.tile_coord.y][stage.tile_coord.x] == Tile::Wall){
+                hit_item = rand()%7;
+                if(hit_item != 6){
+                    hit_item = 0;
+                }
+                item_spawn_pos = stage.tile_coord; 
             }
             if(status == "big" && stage.map_data[stage.tile_coord.y][stage.tile_coord.x] == Tile::Wall){
                 stage.map_data[stage.tile_coord.y][stage.tile_coord.x] = Tile::Empty;
-                score += ((200+50*(rand()%5))*(rand()%2) );
+                Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/brick_smash.wav"), 0);
+                score += ((200+50*(rand()%5))*(rand()%2));
             }
             stage.tile_value = stage.map_data[stage.tile_coord.y][stage.tile_coord.x];
         }
@@ -300,9 +302,14 @@ void Character::follow(Stage &stage){
 
 void Character::die(){
     is_dead = true;
+    input.right = false;
+    input.left = false;
+    input.jump = false;       
     size.y = 45;
     velocity.x = 0;
-    velocity.y = -sqrtf(2.0f*GRAVITY*(JUMP_HEIGHT));
+    velocity.y = -sqrtf(2.0f*GRAVITY*JUMP_HEIGHT);
+    Mix_PlayChannel(-1,Mix_LoadWAV("res/sound/mario_die.wav"),0);
+    Mix_HaltMusic();
     free();
 }
 
@@ -314,12 +321,13 @@ void Character::power_up(){
 }
 
 void Character::normalize(){
+    Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/power_down.wav"), 0);
     position.y += 45;
     size.y = 45;
     status = "normal";
     set_frame();
 }
 
-void Character::set_velocity_y(float y){
-    this->velocity.y = y;
+void Character::set_velocity(Vector2f velocity){
+    this->velocity = velocity;
 }

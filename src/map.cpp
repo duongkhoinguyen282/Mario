@@ -44,7 +44,7 @@ void Map::load_tiles(SDL_Renderer* &renderer){
     Entity mountain = Entity({0,0}, {225,135}, mountain.load_texture(renderer, "res/image/mountain.png"));
     Entity pipe = Entity({0,0}, {90,180}, pipe.load_texture(renderer, "res/image/pipe.png"));
     Entity castle = Entity({0,0}, {225,225}, castle.load_texture(renderer, "res/image/castle.png"));
-    
+
     tiles[Tile::Empty] = Entity();
     tiles[Tile::Ground] = ground;
     tiles[Tile::Wall] = wall;

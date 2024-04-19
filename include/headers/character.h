@@ -26,16 +26,19 @@ public:
     void power_up();
     void normalize();
     Vector2f get_velocity(){return velocity;};
-    void set_velocity_y(float y);
+    void set_velocity(Vector2f velocity);
     std::string get_status(){return status;};
 
 public:
     int invincible_time = INVINCIBLE_TIME;
+    int acceleration = ACCELERATION;
     bool invincible = false;
-    int hit_mushroom = false;
-    Vector2i mushroom_spawn_pos;
+    int hit_item = false;
+    Vector2i item_spawn_pos;
+    bool clear_stage = false;
     int score = 0;
     int lives = 1;
+    int coin = 0;
 
 private:
     Vector2f velocity;

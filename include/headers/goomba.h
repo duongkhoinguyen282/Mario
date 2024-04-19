@@ -7,7 +7,7 @@
 
 #define GOOMBA_FRAMES 2
 #define GOOMBA_SPEED 3
-#define NUM_OF_GOOMBAS 10
+#define NUM_OF_GOOMBAS 20
 
 class Goomba: public Enemy{
 public:

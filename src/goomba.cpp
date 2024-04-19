@@ -78,7 +78,7 @@ void Goomba::check_collision(Stage &stage, Goomba* &goombas, Character &player){
     
     //goomba die after mario jumped on
     if(verti_hit(player) && !is_dead && !player.get_death()){
-        player.set_velocity_y(-sqrtf(2.0f*GRAVITY*(TILE_SIZE*2)));
+        player.set_velocity({player.get_velocity().x,-sqrtf(2.0f*GRAVITY*(TILE_SIZE*2.5))});
         player.score += 100;
         die();
     }
@@ -137,7 +137,7 @@ void Goomba::check_collision(Stage &stage, Goomba* &goombas, Character &player){
             velocity.y = 0;
         }
         if(position.y >= (13.5)*TILE_SIZE) {
-            die();
+            velocity.y = -sqrtf(2.0f*GRAVITY*(TILE_SIZE*2));
         }
     }
 
@@ -167,6 +167,7 @@ bool Goomba::verti_hit(Character &player){
     if(player.get_velocity().y > 0 && (player.get_position().y + player.get_size().y >= position.y) && 
         (((player.get_position().x + map_x < position.x + size.x) && (player.get_position().x + map_x > position.x))
         || ((player.get_position().x + map_x + player.get_size().x < position.x + size.x) && (player.get_position().x + map_x + player.get_size().x > position.x)))){
+        // player.set_position({player.get_position().x,player.get_position().y-5});
         return true;
     }
     return false;
@@ -201,7 +202,7 @@ Goomba* Goomba::spawn(){
     for(int i = 0; i < NUM_OF_GOOMBAS; i++){
 		goombas[i] = Goomba();
 		goombas[i].set_position({spawn_pos,0});
-        spawn_pos += 720 + TILE_SIZE*(rand()%3); 
+        spawn_pos += 360 + TILE_SIZE*(rand()%2); 
         if(spawn_pos >= 8730) spawn_pos = 8730;
 	}
     return goombas;
@@ -215,6 +216,7 @@ void Goomba::update_and_draw(SDL_Renderer *&renderer, Stage &stage, Goomba *goom
 }
 
 void Goomba::die(){
+    Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/stomp.wav"), 0);
     is_dead = true;
     velocity.x = 0;
     velocity.y = -sqrtf(2.0f*GRAVITY*(TILE_SIZE/4));

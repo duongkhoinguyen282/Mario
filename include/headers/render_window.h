@@ -4,7 +4,7 @@
 #include<defs.h>
 
 void log_SDL_error(std::ostream &os, const std::string &msg, bool fatal = false);
-void init_SDL(SDL_Window* &window, SDL_Renderer* &renderer);
+void init_SDL(SDL_Window* &gWindow, SDL_Renderer* &gRenderer);
 void quit_SDL(SDL_Window* &window, SDL_Renderer* &renderer);
 
 #endif

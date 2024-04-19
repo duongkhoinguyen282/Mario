@@ -1,0 +1,1 @@
+add coins 200, starman 1000, sound, font

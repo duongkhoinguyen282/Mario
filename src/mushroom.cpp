@@ -31,26 +31,26 @@ void Mushroom::draw(SDL_Renderer *&renderer){
 }
 
 void Mushroom::update(Stage &stage, Character &player){
-    if(player.hit_mushroom > 0){
-        switch (player.hit_mushroom){
-        case 1:
-        case 2:
-        case 3:
+    if(player.hit_item > 0){
+        Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/power_up_appears.wav"), 0);
+        switch (player.hit_item){
+        case 1: case 2: case 3:
             type = "magic";
             break;
         case 4:
             type = "1_up";
             break;
         default:
+            return;
             break;
         }
         velocity = {0,0};
         spawned = false;
         // std::cout<<stage.tile_coord.y<<" "<<stage.tile_coord.x<<std::endl;
         is_eaten = false;
-        position.x = player.mushroom_spawn_pos.x*TILE_SIZE;
-        position.y = player.mushroom_spawn_pos.y*TILE_SIZE;
-        player.hit_mushroom = false;
+        position.x = player.item_spawn_pos.x*TILE_SIZE;
+        position.y = player.item_spawn_pos.y*TILE_SIZE;
+        player.hit_item = false;
         spawning = true;
     }
 
@@ -97,12 +97,15 @@ void Mushroom::check_collision(Stage &stage, Character &player){
     //check horizontal
     if(is_hit(player)){
         is_eaten = true;
-        player.invincible = true;
         if(type == "magic"){
+            Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/power_up.wav"), 0);
+            player.invincible = true;
+            player.invincible_time = INVINCIBLE_TIME/4;
             player.power_up();
             player.score += 1000;
         }
         else if(type == "1_up"){
+            Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/1_up.wav"), 0);
             player.lives++;
         }
     }
@@ -139,21 +142,4 @@ void Mushroom::check_collision(Stage &stage, Character &player){
 
     position.x += velocity.x;
     position.y += velocity.y;
-}
-
-bool Mushroom::is_hit(int &map_element){
-    if(map_element != Tile::Empty && map_element != Tile::Cloud && map_element != Tile::Grass
-    && map_element != Tile::Mountain && map_element != Tile::Castle){
-        return true;
-    }
-    return false;
-}
-
-bool Mushroom::is_hit(Character &player){
-    if((((position.x + size.x >= player.get_position().x + map_x) && (position.x < player.get_position().x + map_x)) 
-    || ((position.x <= player.get_position().x + map_x + player.get_size().x) && (position.x > player.get_position().x + map_x)))
-    && ((position.y < player.get_position().y + player.get_size().y) && (position.y >= player.get_position().y))) {
-        return true;
-    }
-    return false;
 }

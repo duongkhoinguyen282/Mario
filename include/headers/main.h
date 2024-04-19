@@ -6,5 +6,8 @@
 #include<timer.h>
 #include<goomba.h>
 #include<mushroom.h>
+#include<starman.h>
+#include<coin.h>
+#include<flag.h>
 
 #endif
