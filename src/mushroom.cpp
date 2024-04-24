@@ -102,7 +102,8 @@ void Mushroom::check_collision(Stage &stage, Character &player){
             player.invincible = true;
             player.invincible_time = INVINCIBLE_TIME/4;
             player.power_up();
-            player.score += 1000;
+            player.sco_mana.score_increase = 1000;
+            // player.score += 1000;
         }
         else if(type == "1_up"){
             Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/1_up.wav"), 0);

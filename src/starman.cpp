@@ -72,6 +72,7 @@ void Starman::update(Stage &stage, Character &player){
         player.invincible = true;
         player.invincible_time = INVINCIBLE_TIME*2;
         player.acceleration = 25;
+        player.sco_mana.score_increase = 1000;
     }
 
     get_camera(stage);

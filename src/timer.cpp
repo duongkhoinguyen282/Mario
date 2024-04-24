@@ -20,14 +20,14 @@ void Timer::stop(){
     is_start = false;
 }
 
-void Timer::paused(){
+void Timer::pause(){
     if(is_start && !is_pause){
         is_pause = true;
         paused_tick = SDL_GetTicks() - start_tick;
     }
 }
 
-void Timer::unpaused(){
+void Timer::unpause(){
     if(is_pause){
         is_pause = false;
         start_tick = SDL_GetTicks() - paused_tick;

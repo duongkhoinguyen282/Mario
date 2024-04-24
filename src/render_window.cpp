@@ -20,8 +20,13 @@ void init_SDL(SDL_Window* &window, SDL_Renderer* &renderer){
     if(renderer == nullptr) log_SDL_error(std::cout, "Creating renderer failed!", true);
 
     if(Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ){
-        std::cout<< "SDL_mixer could not initialize! SDL_mixer Error: " << Mix_GetError() << std::endl;
+        std::cout << "SDL_mixer could not initialize! SDL_mixer Error: " << Mix_GetError() << std::endl;
     }
+
+    if(TTF_Init() == -1) {
+        std::cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() <<std::endl;
+    }
+
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"linear");
     SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
     SDL_SetRenderDrawColor(renderer, BG_COLOR[0], BG_COLOR[1], BG_COLOR[2], 255);
@@ -31,5 +36,7 @@ void quit_SDL(SDL_Window* &window, SDL_Renderer* &renderer){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     IMG_Quit();
+    Mix_Quit();
+    TTF_Quit();
     SDL_Quit();
 }

@@ -11,7 +11,7 @@
 #define WINDOW_WIDTH 720
 #define WINDOW_HEIGHT 720
 #define WINDOW_TITLE "Non-super Mario Bros"
-const int BG_COLOR[3] {92,148,252};
+const int BG_COLOR[3] {146,144,255};
 
 #define MAX_TILES    20
 
@@ -27,6 +27,7 @@ const int BG_COLOR[3] {92,148,252};
 
 #define GRAVITY 9.8
 #define MAX_FALL_SPEED 45
+#define MAX_TIME 300
 
 enum Tile {Empty, Ground, Wall, Question, Block, Cloud, Grass, Mountain, Pipe, SP_Block,
             Castle = 19, Ques_Aft_Hit = 13};

@@ -78,6 +78,8 @@ void Character::draw(SDL_Renderer* &renderer){
     SDL_Rect dest = {position.x, position.y, size.x, size.y}; 
 
     SDL_RenderCopy(renderer, texture, curr_frame, &dest);
+
+    sco_mana.update(renderer);
 }
 
 void Character::handle_input(SDL_Event event){
@@ -131,6 +133,15 @@ void Character::handle_input(SDL_Event event){
 }
 
 void Character::update(Stage &stage){
+    if(!is_dead && !clear_stage){
+        time_left = MAX_TIME - (SDL_GetTicks()/1000);
+        if(time_left <= 0){
+            time_left = 0;
+            Mix_HaltMusic();
+            Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/running_oot.wav"), 0);
+            die();
+        }
+    }
     velocity.x = 0;
     velocity.y += GRAVITY;
 
@@ -192,12 +203,12 @@ void Character::check_collision(Stage &stage){
             position.x = (x1)*TILE_SIZE-stage.start.x;
             velocity.x = 0;
         }
-        // if(x1 == 202){
-        //     for(int i = 0; i < 4; i++){
-        //         stage.map_data[14][x1+i] = 0;
-        //         stage.map_data[15][x1+i] = 0;
-        //     }
-        // }
+        if(x1 == 202){
+            for(int i = 0; i < 4; i++){
+                stage.map_data[14][x1+i] = 0;
+                stage.map_data[15][x1+i] = 0;
+            }
+        }
     }
     //check left collision
     else if(velocity.x < 0){
@@ -228,7 +239,7 @@ void Character::check_collision(Stage &stage){
     }
     //check top collision
     else if(velocity.y < 0 && !is_dead){
-        if(position.y < 0) {
+        if(position.y + size.y < 0) {
             die();
         }
         else if(is_hit(stage.map_data[y1][x1]) || is_hit(stage.map_data[y1][x2])){
@@ -238,7 +249,7 @@ void Character::check_collision(Stage &stage){
             stage.tile_coord.y = y1;
             if(stage.map_data[stage.tile_coord.y][stage.tile_coord.x] == Tile::Question){
                 stage.map_data[stage.tile_coord.y][stage.tile_coord.x] = Tile::Ques_Aft_Hit;
-                hit_item = std::max(rand()%11-5, 5);
+                hit_item = std::max(rand()%12-5, 0);
                 if((hit_item == 1 || hit_item == 2 || hit_item == 3) && status == "big"){
                     hit_item = 6;
                 }
@@ -254,11 +265,19 @@ void Character::check_collision(Stage &stage){
             if(status == "big" && stage.map_data[stage.tile_coord.y][stage.tile_coord.x] == Tile::Wall){
                 stage.map_data[stage.tile_coord.y][stage.tile_coord.x] = Tile::Empty;
                 Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/brick_smash.wav"), 0);
-                score += ((200+50*(rand()%5))*(rand()%2));
+                sco_mana.score_increase = 200 + 50*(rand()%5);
             }
+
             stage.tile_value = stage.map_data[stage.tile_coord.y][stage.tile_coord.x];
         }
     }
+
+    score += sco_mana.score_increase;
+
+    if(sco_mana.score_increase > 0){
+        sco_mana.item_score.set_position({position.x + 45, position.y - 45});
+    }
+
     position.x += velocity.x;
     position.y += velocity.y;
 

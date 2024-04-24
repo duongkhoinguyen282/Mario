@@ -79,7 +79,7 @@ void Goomba::check_collision(Stage &stage, Goomba* &goombas, Character &player){
     //goomba die after mario jumped on
     if(verti_hit(player) && !is_dead && !player.get_death()){
         player.set_velocity({player.get_velocity().x,-sqrtf(2.0f*GRAVITY*(TILE_SIZE*2.5))});
-        player.score += 100;
+        player.sco_mana.score_increase = 100;
         die();
     }
 

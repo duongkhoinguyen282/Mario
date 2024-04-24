@@ -3,6 +3,7 @@
 
 #include<entity.h>
 #include<map.h>
+#include<score_manager.h>
 
 #define ACCELERATION 15;
 #define CHAR_FRAMES 7
@@ -28,6 +29,7 @@ public:
     Vector2f get_velocity(){return velocity;};
     void set_velocity(Vector2f velocity);
     std::string get_status(){return status;};
+    // Text get_item_score(){return item_score;}
 
 public:
     int invincible_time = INVINCIBLE_TIME;
@@ -39,6 +41,8 @@ public:
     int score = 0;
     int lives = 1;
     int coin = 0;
+    Uint32 time_left = 10;
+    Score_Manager sco_mana;
 
 private:
     Vector2f velocity;

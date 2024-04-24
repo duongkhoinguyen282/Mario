@@ -31,6 +31,10 @@ Vector2i Entity::get_size(){
     return size;
 }
 
+void Entity::set_texture(SDL_Texture* texture){
+    this->texture = texture;
+}
+
 SDL_Texture* Entity::get_texture(){
     return texture;
 }

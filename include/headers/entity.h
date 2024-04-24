@@ -12,6 +12,7 @@ public:
     void set_position(Vector2i position);
     Vector2i get_position();
     Vector2i get_size();
+    void set_texture(SDL_Texture* texture);
     SDL_Texture* get_texture();
     SDL_Texture* load_texture(SDL_Renderer* &renderer, std::string filename);
     void draw(SDL_Renderer* &renderer);

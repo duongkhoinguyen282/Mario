@@ -11,8 +11,8 @@ public:
     
     void start();
     void stop();
-    void paused();
-    void unpaused();
+    void pause();
+    void unpause();
 
     int get_ticks();
 
