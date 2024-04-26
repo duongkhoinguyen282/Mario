@@ -33,8 +33,8 @@ void init_SDL(SDL_Window* &window, SDL_Renderer* &renderer){
 }
 
 void quit_SDL(SDL_Window* &window, SDL_Renderer* &renderer){
-    SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(renderer);
     IMG_Quit();
     Mix_Quit();
     TTF_Quit();

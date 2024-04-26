@@ -34,7 +34,7 @@ void Coin::draw(SDL_Renderer *&renderer){
 }
 
 void Coin::update(Stage &stage, Character &player){
-    if(player.hit_item == 6){
+    if(player.hit_item == Item::_Coin){
         Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/coin.wav"), 0);
         player.sco_mana.score_increase = 100;
         player.coin += 1;

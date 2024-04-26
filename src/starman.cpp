@@ -37,7 +37,7 @@ void Starman::draw(SDL_Renderer *&renderer){
 }
 
 void Starman::update(Stage &stage, Character &player){
-    if(player.hit_item == 5){
+    if(player.hit_item == Item::_Starman){
         Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/power_up_appears.wav"), 0);
         velocity = {0,0};
         spawned = false;

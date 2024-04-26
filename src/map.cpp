@@ -31,6 +31,8 @@ void Map::load_map(std::string filename){
     stage.max.y = (stage.max.y+1)*TILE_SIZE;
     stage.start.x = 0; stage.start.y = 0;
     stage.filename = filename;
+
+    r_file.close();
 }
 
 void Map::load_tiles(SDL_Renderer* &renderer){

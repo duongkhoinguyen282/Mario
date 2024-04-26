@@ -32,4 +32,6 @@ const int BG_COLOR[3] {146,144,255};
 enum Tile {Empty, Ground, Wall, Question, Block, Cloud, Grass, Mountain, Pipe, SP_Block,
             Castle = 19, Ques_Aft_Hit = 13};
 
+enum Item {_Empty, _Magic, _1_up, _Starman, _Coin};
+
 #endif

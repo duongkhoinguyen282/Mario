@@ -153,7 +153,6 @@ void Character::update(Stage &stage){
         crouching = false;
 
         //can't jump if right above is a obstacle
-        
         if(is_stuck(stage)){
             velocity.y = -1;
         }
@@ -262,17 +261,18 @@ void Character::check_collision(Stage &stage){
             stage.tile_coord.y = y1;
             if(stage.map_data[stage.tile_coord.y][stage.tile_coord.x] == Tile::Question){
                 stage.map_data[stage.tile_coord.y][stage.tile_coord.x] = Tile::Ques_Aft_Hit;
-                hit_item = std::max(rand()%12-5, 0);
-                hit_item = 1;
-                if((hit_item == 1 || hit_item == 2 || hit_item == 3) && status == "big"){
-                    hit_item = 6;
+                // std::cout<<stage.tile_coord.x<<" "<<stage.tile_coord.y<<std::endl;
+                // hit_item = std::max(rand()%12-5, 0);
+                hit_item = item_spawning_list(stage.tile_coord.x, stage.tile_coord.y);
+                if((hit_item == Item::_Magic) && status == "big"){
+                    hit_item = Item::_Coin;
                 }
                 item_spawn_pos = stage.tile_coord; 
             }
             if(stage.map_data[stage.tile_coord.y][stage.tile_coord.x] == Tile::Wall){
                 hit_item = rand()%7;
-                if(hit_item != 6){
-                    hit_item = 0;
+                if(hit_item != Item::_Coin){
+                    hit_item = Item::_Empty;
                 }
                 item_spawn_pos = stage.tile_coord; 
             }
@@ -304,6 +304,8 @@ void Character::check_collision(Stage &stage){
         velocity.x = 0;
         position.x = WINDOW_WIDTH - size.x; 
     }
+
+    if(position.y >= 1500) position.y = 1500;
 }
 
 bool Character::is_hit(int &map_element){
@@ -378,4 +380,73 @@ void Character::normalize(){
 
 void Character::set_velocity(Vector2f velocity){
     this->velocity = velocity;
+}
+
+int Character::item_spawning_list(int x, int y){
+    if(x == 16 && y == 10){
+        return Item::_Coin*(std::max(rand()%3-1, 1));
+    }
+
+    if(x == 21 && y == 10){
+        return Item::_Magic;
+    }
+
+    if(x == 22 && y == 6){
+        return Item::_Coin*(std::max(rand()%3-1, 1));
+    }
+
+    if(x == 23 && y == 10){
+        return Item::_Coin*(std::max(rand()%3-1, 1));
+    }
+
+    if(x == 48 && y == 4){
+        return (rand()%4+1);
+    }
+
+    if(x == 166 && y == 10){
+        return Item::_Empty;
+    }
+
+    if(x == 62 && y == 8){
+        return Item::_1_up;
+    }
+
+    if(x == 76 && y == 10){
+        return Item::_Magic;
+    }
+
+    if(x == 92 && y == 6){
+        return Item::_Coin;
+    }
+
+    if(x == 104 && y == 10){
+        return Item::_Starman;
+    }
+
+    if(x == 107 && y == 10){
+        return Item::_Coin*(std::max(rand()%3-1, 1));
+    }
+
+    if(x == 107 && y == 6){
+        return Item::_Magic;
+    }
+
+    if(x == 110 && y == 10){
+        return Item::_Empty;
+    }
+
+    if(x == 127 && y == 6){
+        return Item::_Coin*(std::max(rand()%3-1, 1));
+    }
+
+    if(x == 128 && y == 6){
+        return Item::_Coin*(std::max(rand()%3-1, 1));
+    }
+
+    if(x == 166 && y == 10){
+        return rand()%5;
+    }
+
+
+    return 0;
 }

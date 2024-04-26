@@ -34,6 +34,7 @@ public:
     void pause_action(){
         input.left = input.right = input.jump = input.crouch = false;
     }
+    int item_spawning_list(int x, int y);
 
 public:
     int invincible_time = INVINCIBLE_TIME;

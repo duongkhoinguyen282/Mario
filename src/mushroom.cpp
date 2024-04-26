@@ -35,10 +35,10 @@ void Mushroom::update(Stage &stage, Character &player){
     if(player.hit_item > 0){
         Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/power_up_appears.wav"), 0);
         switch (player.hit_item){
-        case 1: case 2: case 3:
+        case Item::_Magic:
             type = "magic";
             break;
-        case 4:
+        case Item::_1_up:
             type = "1_up";
             break;
         default:

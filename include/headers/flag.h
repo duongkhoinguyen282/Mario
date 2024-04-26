@@ -11,6 +11,7 @@ public:
     void draw(SDL_Renderer* &renderer);
     void update(Stage &stage, Character &player);
     bool get_spawning(){return spawning;}
+    bool is_spawned(){return spawned;}
     
 private:
 

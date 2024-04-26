@@ -17,7 +17,7 @@ public:
     Game(/* args */);
     ~Game();
 
-    void run();
+    void run(SDL_Window* &window, SDL_Renderer* &renderer);
     void game_loop(Character &player);
     void set_menu(Character &player);
     void set_map();
@@ -36,10 +36,11 @@ public:
     void fps_manager();
 
 public:
-    bool play_again;
+    bool play_again = false;
 
 private:
     bool is_open = true;
+    int switch_won_scr = 0;
 
     Uint32 time_left_val = MAX_TIME;
     // bool game_run = false;

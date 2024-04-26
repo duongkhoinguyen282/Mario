@@ -1,13 +1,12 @@
 #include<game.h>
 
-Game::Game(){
-
-}
+Game::Game(){}
 
 Game::~Game(){}
 
-void Game::run(){
-    init_SDL(window, renderer);
+void Game::run(SDL_Window* &window, SDL_Renderer* &renderer){
+    this->window = window;
+    this->renderer = renderer;
 
     //set map
     set_map();
@@ -71,10 +70,31 @@ void Game::run(){
 		if(!menu.game_run || menu.is_paused){
             count_down.pause();
             set_menu(player);
+            if(menu.play_again) {
+                play_again = true;
+                menu.play_again = false;
+                is_open = false;
+                delete [] goombas;
+            }
 		}
 
 		else{
             game_loop(player);
+            menu.free();
+            if(player.get_position().y >= 1500) {
+                menu.game_run = false;
+                menu.game_over = true;
+            }
+            else if(flag.is_spawned()){
+                int bonus = time_left_val*100 + player.coin*50;
+                menu.player_score = player.score + bonus;
+                menu.set_high_score();
+                switch_won_scr++;
+                if(switch_won_scr >= 6*FPS){
+                    menu.game_run = false;
+                    menu.won_game = true;
+                }
+            }
 		}
 
         SDL_RenderPresent(renderer);
@@ -83,9 +103,6 @@ void Game::run(){
 	}
 	Mix_HaltMusic();
 	TTF_CloseFont(font);
-
-	//destroy and quit
-	quit_SDL(window,renderer);
 }
 
 void Game::game_loop(Character &player){
@@ -116,7 +133,8 @@ void Game::game_loop(Character &player){
     //render name and tags
     name.render(renderer);
     wo_ti.render(renderer);
-
+    level.render(renderer);
+    
     //render score
     render_score(player);
 
@@ -149,6 +167,7 @@ void Game::set_music(){
 void Game::set_name_and_score(){
     name.set_text("MARIO"); name.set_position({67,20});
 	name.write_text(renderer,font,color);
+
     score.set_position({67,45}); 
 }
 
@@ -166,7 +185,7 @@ void Game::set_world_and_time(){
 }
 
 void Game::set_world_level(){
-	level.set_text("         1-1"); level.set_position({67,45});
+	level.set_text("               1-1"); level.set_position({67,45});
 	level.write_text(renderer,font,color);
 }
 

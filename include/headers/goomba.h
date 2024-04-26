@@ -27,6 +27,7 @@ public:
 
 private:
     SDL_Rect frames[GOOMBA_FRAMES];
+    int num_of_goombas = 0;
 };
 
 #endif
