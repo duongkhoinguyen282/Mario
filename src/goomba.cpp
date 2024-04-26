@@ -137,7 +137,7 @@ void Goomba::check_collision(Stage &stage, Goomba* &goombas, Character &player){
             velocity.y = 0;
         }
         if(position.y >= (13.5)*TILE_SIZE) {
-            velocity.y = -sqrtf(2.0f*GRAVITY*(TILE_SIZE*2));
+            velocity.y = -sqrtf(2.0f*GRAVITY*JUMP_HEIGHT);
         }
     }
 
