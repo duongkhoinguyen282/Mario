@@ -23,7 +23,7 @@ const int BG_COLOR[3] {146,144,255};
 #define MAP_RENDER_WIDTH    16
 #define MAP_RENDER_HEIGHT   16
 
-#define FPS 30
+#define FPS 25
 
 #define GRAVITY 9.8
 #define MAX_FALL_SPEED 45

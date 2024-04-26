@@ -122,26 +122,13 @@ void Character::handle_input(SDL_Event event){
         if(event.key.keysym.sym == SDLK_UP){
             input.jump = false;
         }
-        if(event.key.keysym.sym == SDLK_DOWN && status == "big" && !can_crouch){
+        if(event.key.keysym.sym == SDLK_DOWN && status == "big"){
             input.crouch = false;
-            size = {TILE_SIZE,TILE_SIZE*2};
-            position.y -= TILE_SIZE; 
-            can_crouch = true;
-
         }
     }
 }
 
 void Character::update(Stage &stage){
-    if(!is_dead && !clear_stage){
-        time_left = MAX_TIME - (SDL_GetTicks()/1000);
-        if(time_left <= 0){
-            time_left = 0;
-            Mix_HaltMusic();
-            Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/running_oot.wav"), 0);
-            die();
-        }
-    }
     velocity.x = 0;
     velocity.y += GRAVITY;
 
@@ -162,12 +149,36 @@ void Character::update(Stage &stage){
     if(input.jump && on_ground && !input.crouch && !is_dead){
         Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/jump.wav"), 0);
         on_ground = false;
-        velocity.y = -sqrtf(2.0f*GRAVITY*(JUMP_HEIGHT));
+        can_crouch = false;
+        crouching = false;
+
+        //can't jump if right above is a obstacle
+        
+        if(is_stuck(stage)){
+            velocity.y = -1;
+        }
+
+        else velocity.y = -sqrtf(2.0f*GRAVITY*(JUMP_HEIGHT));
     }
 
-    else if(input.crouch && can_crouch){
+    //crouching
+    else if(status == "big" && input.crouch && can_crouch){
         size = {TILE_SIZE,TILE_SIZE};
-        position.y += TILE_SIZE; 
+        if(!crouching) position.y += TILE_SIZE; 
+        crouching = true;
+    }
+    else if(status == "big" && !input.jump && !input.crouch && !can_crouch){
+        if(is_stuck(stage) && crouching) {
+            velocity.y = -1;
+            // std::cout<<"hit2"<<std::endl;
+        }    
+        else{
+            input.crouch = false;
+            can_crouch = true;
+            crouching = false;
+            size = {TILE_SIZE,TILE_SIZE*2};
+            position.y -= TILE_SIZE; 
+        }    
     }
 
     //being invincible
@@ -231,18 +242,20 @@ void Character::check_collision(Stage &stage){
             position.y = y1*TILE_SIZE;
             velocity.y = 0;
             on_ground = true;
-            can_crouch = ~input.crouch & on_ground;
+            can_crouch = ~crouching & on_ground;
         }
         if(position.y > (13.5)*TILE_SIZE) {
             die();
+            // std::cout<<"die"<<std::endl;
         }
     }
     //check top collision
-    else if(velocity.y < 0 && !is_dead){
+    else if(velocity.y <= 0 && !is_dead){
+        // std::cout<<x2<<" "<<y1<<std::endl;
         if(position.y + size.y < 0) {
             die();
         }
-        else if(is_hit(stage.map_data[y1][x1]) || is_hit(stage.map_data[y1][x2])){
+        else if((is_hit(stage.map_data[y1][x1]) || is_hit(stage.map_data[y1][x2]))){
             position.y = (y1+1)*TILE_SIZE;
             velocity.y = 0;
             stage.tile_coord.x = is_hit(stage.map_data[y1][x1])? x1 : x2; 
@@ -250,6 +263,7 @@ void Character::check_collision(Stage &stage){
             if(stage.map_data[stage.tile_coord.y][stage.tile_coord.x] == Tile::Question){
                 stage.map_data[stage.tile_coord.y][stage.tile_coord.x] = Tile::Ques_Aft_Hit;
                 hit_item = std::max(rand()%12-5, 0);
+                hit_item = 1;
                 if((hit_item == 1 || hit_item == 2 || hit_item == 3) && status == "big"){
                     hit_item = 6;
                 }
@@ -264,7 +278,7 @@ void Character::check_collision(Stage &stage){
             }
             if(status == "big" && stage.map_data[stage.tile_coord.y][stage.tile_coord.x] == Tile::Wall){
                 stage.map_data[stage.tile_coord.y][stage.tile_coord.x] = Tile::Empty;
-                Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/brick_smash.wav"), 0);
+                Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/wall_smash.wav"), 0);
                 sco_mana.score_increase = 200 + 50*(rand()%5);
             }
 
@@ -300,6 +314,19 @@ bool Character::is_hit(int &map_element){
     return false;
 }
 
+bool Character::is_stuck(Stage stage){
+    int u1 = (position.x + stage.start.x)/TILE_SIZE;
+    int u2 = (position.x + size.x-1 + stage.start.x)/TILE_SIZE;
+
+    int y = position.y/TILE_SIZE -1;
+
+    if(is_hit(stage.map_data[y][u1]) || is_hit(stage.map_data[y][u2])){
+        return true;
+    }
+
+    return false;
+}
+
 void Character::follow(Stage &stage){
     if(stage.start.x != (stage.max.x - WINDOW_WIDTH) && position.x >= (WINDOW_WIDTH/4) && input.right){
         position.x = WINDOW_WIDTH/4;
@@ -309,7 +336,6 @@ void Character::follow(Stage &stage){
     else if(stage.start.x != 0 && position.x <= (WINDOW_WIDTH/4) && input.left){
         position.x = WINDOW_WIDTH/4;
         stage.start.x += velocity.x;
-        // std::cout<<stage.start.x<<std::endl;
     }
     if(stage.start.x <= 0){
         stage.start.x = 0;
@@ -321,9 +347,7 @@ void Character::follow(Stage &stage){
 
 void Character::die(){
     is_dead = true;
-    input.right = false;
-    input.left = false;
-    input.jump = false;       
+    pause_action();      
     size.y = 45;
     velocity.x = 0;
     velocity.y = -sqrtf(2.0f*GRAVITY*JUMP_HEIGHT);
@@ -336,12 +360,17 @@ void Character::power_up(){
     position.y -= 45;
     size.y = 90;
     status = "big";
+    can_crouch = true;
+    crouching = false;
     set_frame();
 }
 
 void Character::normalize(){
     Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/power_down.wav"), 0);
-    position.y += 45;
+    if(!crouching) {
+        position.y += 45;
+    }
+    input.crouch = false;
     size.y = 45;
     status = "normal";
     set_frame();

@@ -6,6 +6,7 @@ Mushroom::Mushroom(){
     size = {45,45};
     map_x = 0;
     map_y = 0;
+    is_eaten = true;
 }
 
 Mushroom::~Mushroom(){}
@@ -95,7 +96,7 @@ void Mushroom::check_collision(Stage &stage, Character &player){
     y2 = (position.y + size.y - 1)/TILE_SIZE;
 
     //check horizontal
-    if(is_hit(player)){
+    if(is_hit(player) && !is_eaten){
         is_eaten = true;
         if(type == "magic"){
             Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/power_up.wav"), 0);

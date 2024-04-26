@@ -6,6 +6,7 @@ Starman::Starman(){
     size = {45,45};
     map_x = 0;
     map_y = 0;
+    is_eaten = true;
 }
 
 Starman::~Starman(){}
@@ -66,7 +67,7 @@ void Starman::update(Stage &stage, Character &player){
         position = {0,0};
     }
 
-    if(is_hit(player)){
+    if(is_hit(player) && !is_eaten){
         Mix_PlayChannel(-1, Mix_LoadWAV("res/sound/power_up.wav"), 0);
         is_eaten = true;
         player.invincible = true;

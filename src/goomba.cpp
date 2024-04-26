@@ -173,29 +173,6 @@ bool Goomba::verti_hit(Character &player){
     return false;
 }
 
-bool Goomba::is_hit_right(Goomba* &goombas){
-    for(int i = 1; i < NUM_OF_GOOMBAS; i++){
-        if(position.x + velocity.x + size.x == goombas[i].position.x + goombas[i].velocity.x){
-            goombas[i].face_left = false;
-            // std::cout<<"hit";
-            return true;
-        }
-        else return false;
-    }
-    return false;
-}
-
-bool Goomba::is_hit_left(Goomba* &goombas){
-    for(int i = 0; i < NUM_OF_GOOMBAS-1; i++){
-        if(position.x + velocity.x == goombas[i].position.x + goombas[i].velocity.x + goombas[i].size.x){
-            // std::cout<<"hit";
-            return true;
-        }
-        else return false;
-    }
-    return false;
-}
-
 Goomba* Goomba::spawn(){
     int spawn_pos = 765;
     Goomba* goombas = new Goomba[NUM_OF_GOOMBAS];

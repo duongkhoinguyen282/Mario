@@ -40,9 +40,10 @@ int Timer::get_ticks(){
         if(is_pause){
             return paused_tick;
         }
-    }
-    else{
-        return SDL_GetTicks() - start_tick;
+        else{
+            // std::cout<<SDL_GetTicks()<<" "<<start_tick;
+            return SDL_GetTicks() - start_tick;
+        }
     }
 
     return 0;

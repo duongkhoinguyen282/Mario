@@ -21,8 +21,6 @@ public:
     bool is_hit(int &map_element);
     bool horiz_hit(Character &player);
     bool verti_hit(Character &player);
-    bool is_hit_right(Goomba* &goombas);
-    bool is_hit_left(Goomba* &goombas);
     Goomba* spawn();
     void update_and_draw(SDL_Renderer *&renderer, Stage &stage, Goomba *goombas, Character &player);
     void die();

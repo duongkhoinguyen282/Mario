@@ -21,15 +21,19 @@ public:
     void update(Stage &stage);
     void check_collision(Stage &stage);
     bool is_hit(int &map_element);
+    bool is_stuck(Stage stage);
     void follow(Stage &stage);
     void die();
     bool get_death(){return is_dead;};
+    bool is_won(){return clear_stage;};
     void power_up();
     void normalize();
     Vector2f get_velocity(){return velocity;};
     void set_velocity(Vector2f velocity);
     std::string get_status(){return status;};
-    // Text get_item_score(){return item_score;}
+    void pause_action(){
+        input.left = input.right = input.jump = input.crouch = false;
+    }
 
 public:
     int invincible_time = INVINCIBLE_TIME;
@@ -39,9 +43,8 @@ public:
     Vector2i item_spawn_pos;
     bool clear_stage = false;
     int score = 0;
-    int lives = 1;
+    int lives = 3;
     int coin = 0;
-    Uint32 time_left = 10;
     Score_Manager sco_mana;
 
 private:
@@ -53,6 +56,7 @@ private:
     bool on_ground = false;
     bool is_dead = false;
     bool can_crouch = true;
+    bool crouching = false;
     std::string status = "normal";
 };
 

@@ -38,6 +38,10 @@ struct Input{
     bool right = false;
     bool jump = false;
     bool crouch = false;
+
+    bool up = false;
+    bool down = false;
+    bool enter = false;
 };
 
 #endif

@@ -1,8 +1,10 @@
 #include<main.h>
 
 int main(int argc, char *argv[]){
+	srand(time(0));
 
-	run_game();
+	Game game;
+	game.run();
 
 	return 0;
 }
