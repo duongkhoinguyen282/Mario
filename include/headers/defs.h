@@ -10,7 +10,7 @@
 
 #define WINDOW_WIDTH 720
 #define WINDOW_HEIGHT 720
-#define WINDOW_TITLE "Non-super Mario Bros"
+#define WINDOW_TITLE "Super Mario Bros."
 const int BG_COLOR[3] {146,144,255};
 
 #define MAX_TILES    20
