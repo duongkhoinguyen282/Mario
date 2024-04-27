@@ -33,7 +33,7 @@ Hoặc Chọn Code -> Download Zip (53.8 MB).
 
 </div>
 
-**Bước 2 :** Cài đặt môi trường. Cài đặt theo hướng dẫn ở mục "Installing the MinGW-w64 toolchain" [tại đây.](https://code.visualstudio.com/docs/cpp/config-mingw.)
+**Bước 2 :** Cài đặt môi trường. Cài đặt theo hướng dẫn ở mục "Installing the MinGW-w64 toolchain" [tại đây](https://code.visualstudio.com/docs/cpp/config-mingw).
 
 **Bước 3 :** Bật SMB.exe và chơi.
 
