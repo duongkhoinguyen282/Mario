@@ -184,11 +184,11 @@ Sử dụng phím **K** trên bàn phím để *tự tử*.
 
 Sử dụng trên Internet và có chỉnh sửa đôi chút.
 Nguồn :
-+ https ://github.com/Kofybrek/Super-Mario-Bros/tree/Main
-+ https ://www.spriters-resource.com/search/?q=mario
-+ https ://www.spriters-resource.com/nes/supermariobros/sheet/50365/
-+ https ://nesmaps.com/maps/SuperMarioBrothers/SuperMarioBrothers.html
-+ https ://themushroomkingdom.net/media/smb/wav
++ [https://github.com/Kofybrek/Super-Mario-Bros/tree/Main](https://github.com/Kofybrek/Super-Mario-Bros/tree/Main)
++ [https://www.spriters-resource.com/search/?q=mario](https://www.spriters-resource.com/search/?q=mario)
++ [https://www.spriters-resource.com/nes/supermariobros/sheet/50365/](https://www.spriters-resource.com/nes/supermariobros/sheet/50365/)
++ [https://nesmaps.com/maps/SuperMarioBrothers/SuperMarioBrothers.html](https://nesmaps.com/maps/SuperMarioBrothers/SuperMarioBrothers.html)
++ [https://themushroomkingdom.net/media/smb/wav](https://themushroomkingdom.net/media/smb/wav)
 
 # 6. Về source code game :
 
@@ -218,25 +218,29 @@ Nguồn :
 
 - Folder **_lib_** : chứa các *library* của thư viện SDL2, SDL_mixer, SDL_image, SDL_ttf.
 
-- Folder **_map_** : Chứa *file* map.dat, lưu trữ bản đồ của game dưới dạng số :
-    * **0** là **Trống**
-    * **1** là **Đất**
-    * **2** là **Tường**
-    * **3** là **Hộp bí ẩn**
-    * **4** là **Chướng ngại vật**
-    * **5** là **Mây**
-    * **6** là **Cỏ**
-    * **7** là **Núi**
-    * **8** là **Ống**
-    * **9** là **Ô hỗ trợ (Ô tàng hình)**
-    * **13** là **Hộp bí ẩn sau khi được mở**
-    * **19** là **Lâu đài**
-
 - Folder **_font_** : chứa *font* chữ dùng trong game.
 
 - Folder **_res_** : chứa các *tài nguyên* dùng trong game :
-    * Folder **_image_** : chứa các *texture* của các nhân vật, đối tượng, ... và các ảnh khác dùng trong game.
-    * Folder **_sound_** : chứa các file âm thanh dùng trong game.
-    * Folder **_preview_** : chứa các file ảnh dùng để *preview game* trong README.md.
-- Folder **_src_** : chứa các file *mã nguồn .cpp* định nghĩa các phương thức của các class trong các file *headers* và file *main.cpp* và file *high_score.txt* lưu trữ kỉ lục của người chơi.
+    * Folder **_map_** : Chứa *file* map.dat, lưu trữ bản đồ của game dưới dạng số :
+       + **0** là **Trống**
+       + **1** là **Đất**
+       + **2** là **Tường**
+       + **3** là **Hộp bí ẩn**
+       + **4** là **Chướng ngại vật**
+       + **5** là **Mây**
+       + **6** là **Cỏ**
+       + **7** là **Núi**
+       + **8** là **Ống**
+       + **9** là **Ô hỗ trợ (Ô tàng hình)**
+       + **13** là **Hộp bí ẩn sau khi được mở**
+       + **19** là **Lâu đài**
+
+    * Folder **_image_** : Chứa các *texture* của các nhân vật, đối tượng, ... và các ảnh khác dùng trong game.
+      
+    * Folder **_sound_** : Chứa các file âm thanh dùng trong game.
+    * Folder **_icon_** : Chứa icon của game.
+      
+    * Folder **_preview_** : Chứa các file ảnh dùng để *preview game* trong README.md.
+      
+- Folder **_src_** : Chứa các file *mã nguồn .cpp* định nghĩa các phương thức của các class trong các file *headers* và file *main.cpp* và file *high_score.txt* lưu trữ kỉ lục của người chơi.
 
