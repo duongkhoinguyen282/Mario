@@ -80,7 +80,7 @@ Hoặc Chọn Code -> Download Zip (53.8 MB).
 
 - **Xu** *(Coin)* ![image](res/preview/coin.png) : Là loại đối tượng **Mario** không cần phải ăn, khi xuất hiện sẽ tăng lượng **Xu** đang có thêm 1. 
 
-- **Lâu đài** *(Castle)* : Xuất hiện ở cuối bản đồ, là đích của trò chơi.
+- **Lâu đài** *(Castle)* ![image](res/preview/castle.png): Xuất hiện ở cuối bản đồ, là đích của trò chơi.
 
 - **Tên và Điểm** *(Name and Score)* (res/preview/name_score.png) : Xuất hiện ở góc bên trái trên cùng của màn hình, hiển thị tên và điểm của người chơi. Cách tính điểm :
     * Hạ **Goomba** ![ezgif com-video-to-gif](res/preview/kill_goomba.gif) : Được thêm **100 Điểm**.
