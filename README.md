@@ -72,9 +72,9 @@ Hoặc Chọn Code -> Download Zip (53.8 MB).
 
 - **Hộp bí ẩn** *(Question box)* ![image](res/preview/question.png) : Là loại đối tượng không thể bị phá với mọi trạng thái của **Mario**. **Hộp bí ẩn** có thể cho ra các *vật phẩm hỗ trợ* như **Nấm ma thuật, Nấm sinh mệnh, Ngôi sao, Xu** hoặc không có gì tuỳ theo vị trí của **Hộp bí ẩn**. Một khi **Hộp bí ẩn** được mở, sẽ trở thành ![image](res/preview/ques_aft_hit.png) một đối tượng **bình thường** không có chức năng đặc biệt.
 
-- **Nấm ma thuật** *(Magic Mushroom)* ![image](res/preview/**Goomba**.png) : Là loại nấm khi **Mario** ăn sẽ tiến vào trạng thái *Siêu sức mạnh*, trở nên *Bất tử* trong khoảng *3 giây*.
+- **Nấm ma thuật** *(Magic Mushroom)* ![image](res/preview/magic_mushroom.png) : Là loại nấm khi **Mario** ăn sẽ tiến vào trạng thái *Siêu sức mạnh*, trở nên *Bất tử* trong khoảng *3 giây*.
 
-- **Nấm sinh mệnh** *(1 Up Mushroom)* ![image](res/preview/1_up.png) : Là loại nấm khi **Mario** ăn sẽ được thêm 1 **Mạng**.
+- **Nấm sinh mệnh** *(1 Up Mushroom)* ![image](res/preview/1_up_mushroom.png) : Là loại nấm khi **Mario** ăn sẽ được thêm 1 **Mạng**.
 
 - **Ngôi sao** *(Starman)* ![image](res/preview/starman.png) : Là loại đối tượng sau khi **Mario** ăn, trong vòng 6 giây sẽ trở nên *Bất tử*, và tăng tốc gấp 5/3 *(1.67%)* lần.
 
