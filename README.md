@@ -57,7 +57,7 @@ Hoặc Chọn Code -> Download Zip (53.8 MB).
 
 - Sau đó, hãy bấm phím **Escape (ESC)** trên bàn phím để thoát lại ra màn hình ban đầu và chọn chế độ *1 người chơi* và bắt đầu trải nghiệm game.
 
-- Ngoài ra, bên cạnh chữ **TOP -** ![image](res/preview/high_score.png) là *kỉ lục* của người chơi.
+- Ngoài ra, bên cạnh chữ **TOP -** ![image](res/preview/high_score.png) <br> là *kỉ lục* của người chơi.
 
 # 2. Các thành phần trong game :
 
